@@ -34,7 +34,8 @@ class PlanetCoasterMerge {
     PlanetCoasterMerge(String file_top_open, boolean isfinalfile) throws Exception{
         Element root; //The root element of the xml file
         Document document_file;
-        isnewFile=isfinalfile;
+        isnewFile=isfinalfile; //if is the new file i need to store comments
+        //creating the array lists
         Keys=new ArrayList<String>();
         utf8_values = new ArrayList<byte[]>();
         //-------------------------------------------------------------------------
@@ -86,7 +87,7 @@ class PlanetCoasterMerge {
                     utf8_values.add(((Attr) node_att.item(1)).getValue().getBytes(Charset.forName("UTF-8")));
                 }
             }else{ //if is a comment
-                if(isnewFile) {
+                if(isnewFile) { //store comments only if is the new file
                     if (node.getNodeType() == Element.COMMENT_NODE) {
                         Comment comment = (Comment) node;
                         Keys.add("Comment");

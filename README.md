@@ -3,7 +3,7 @@ A little software for Planet Coaster translators that merge the old xml translat
 
 ## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
+These instructions will get you a copy of the program for development and testing purposes, you can edit it or just use it for Planet Coaster XML files.
 
 ### Prerequisites (How to download and execute)
 

@@ -53,6 +53,7 @@ class PlanetCoasterWriter {
         PlanetCoasterMerge oldFile = new PlanetCoasterMerge(oldPath, false);
         System.out.println("Second File:"); //second file (new)
         PlanetCoasterMerge newFile = new PlanetCoasterMerge(newPath, true);
+        //Setting array references to keys and values
         oldKeys=oldFile.Keys;
         oldUTFTrans=oldFile.utf8_values;
 
@@ -67,7 +68,7 @@ class PlanetCoasterWriter {
         }
         //----------------------------------------------------------
         System.out.println("Starting array merge");
-        merge_arrays();
+        merge_arrays(); //merging the two arrays
         System.out.println("End of array merge");
         System.out.println("Copy utf8_values:"); //Print test - 2
         if(newKeys.indexOf("BuildingPartCategory_Building_Signs")==-1){
@@ -77,6 +78,7 @@ class PlanetCoasterWriter {
         }
         System.out.println("---------------------------");
         //----------------------------------------------------------
+        //start creating the new xml
         DocumentBuilderFactory dbf=DocumentBuilderFactory.newInstance();
         try{
             DocumentBuilder builder = dbf.newDocumentBuilder();
@@ -89,6 +91,7 @@ class PlanetCoasterWriter {
         xml_document.appendChild(root_element); //Setting root child element
         Element translation= xml_document.createElement("translation");
         //----------------------------------------------------------
+        //create the xml with elements, comments, etc
         Element entry;
         Comment comment;
         int comments_counter=0;
@@ -112,6 +115,7 @@ class PlanetCoasterWriter {
         root_element.appendChild(translation);
         System.out.println("---------------------------");
         //----------------------------------------------------------
+        //write the xml to a file
         DOMImplementation impl= xml_document.getImplementation();
         DOMImplementationLS implLS=(DOMImplementationLS)impl.getFeature("LS","3.0");
         LSSerializer ser=implLS.createLSSerializer();
@@ -166,20 +170,23 @@ class PlanetCoasterWriter {
         int start_size=oldKeys.size();
         int values_found=0;
         int values_removed=0;
-        while(oldKeys.size()>0){
+        while(oldKeys.size()>0){ //while there are old keys
             int pos=newKeys.indexOf(oldKeys.get(0));
-            if(pos!=-1){
+            if(pos!=-1){ //if the old key exist in new file
+                //write it
                 newUTFTrans.set(pos, oldUTFTrans.get(0));
                 oldKeys.remove(0);
                 oldUTFTrans.remove(0);
                 values_found++;
             }else{
+                //the old key doesn't exist
                 values_removed++;
-                try {
+                try { //saving the key as removed
                     removed_values.add(new String(oldUTFTrans.get(0), "UTF-8"));
                 }catch (java.io.UnsupportedEncodingException e){
                     System.out.print("FATAL ERROR");
                 }
+                //removing the key
                 remKeys.add(oldKeys.get(0));
                 oldUTFTrans.remove(0);
                 oldKeys.remove(0);

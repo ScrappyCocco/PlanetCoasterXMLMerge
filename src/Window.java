@@ -50,6 +50,7 @@ public class Window extends JFrame {
         JPanel total_panel=new JPanel();
         total_panel.setLayout(new GridLayout(3,2));
         //----------------------------------------------------------------
+        //old file - panel and buttons
         labelOldFile=new JLabel("OLD File name");
         selectOldFile=new JButton("Select Old File");
         selectOldFile.addActionListener(new OldFilePath());
@@ -62,6 +63,7 @@ public class Window extends JFrame {
         total_panel.add(oldL);
         total_panel.add(oldS);
         //----------------------------------------------------------------
+        //new file - panel and buttons
         labelNewFile=new JLabel("NEW File name");
         selectNewFile=new JButton("Select New File");
         selectNewFile.addActionListener(new NewFilePath());
@@ -74,6 +76,7 @@ public class Window extends JFrame {
         total_panel.add(newL);
         total_panel.add(newS);
         //----------------------------------------------------------------
+        //elaborate file - panel and buttons
         elaborate=new JButton("Process");
         elaborate.addActionListener(new Elaborate_Files());
 
@@ -107,16 +110,16 @@ public class Window extends JFrame {
          */
         public void actionPerformed(ActionEvent e){
             try{
-                JFileChooser fileChooser = new JFileChooser();
+                JFileChooser fileChooser = new JFileChooser(); //create the file chooser
                 javax.swing.filechooser.FileFilter f1 = new FileNameExtensionFilter("OLD Xml File", "xml");
-                fileChooser.addChoosableFileFilter(f1);
-                fileChooser.setFileFilter(f1);
+                fileChooser.addChoosableFileFilter(f1); //add the file filter
+                fileChooser.setFileFilter(f1); //set the current filter
                 fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-                fileChooser.setMultiSelectionEnabled(false);
+                fileChooser.setMultiSelectionEnabled(false); //can select only a file
                 print_log("C:\\Users\\"+System.getProperty("user.name")+"\\AppData\\Local\\Frontier Developments\\Planet Coaster\\Translations");
                 fileChooser.setCurrentDirectory(new File("C:\\Users\\"+System.getProperty("user.name")+"\\AppData\\Local\\Frontier Developments\\Planet Coaster\\Translations"));
                 int result = fileChooser.showOpenDialog(labelOldFile);
-                if (result == JFileChooser.APPROVE_OPTION) {
+                if (result == JFileChooser.APPROVE_OPTION) { //if the user choose a file
                     File selectedFile = fileChooser.getSelectedFile();
                     print_log("Selected file: " + selectedFile.getAbsolutePath());
                     labelOldFile.setText(selectedFile.getName());
@@ -163,10 +166,10 @@ public class Window extends JFrame {
 
     class Elaborate_Files implements ActionListener, Runnable{
         public void actionPerformed(ActionEvent e) {
-            if(done_first_file && done_second_file) {
-                Thread t = new Thread(new Elaborate_Files());
-                t.start();
-            }else{
+            if(done_first_file && done_second_file) { //only if both are true
+                Thread t = new Thread(new Elaborate_Files()); //i can create the new file
+                t.start(); //starting the process thread
+            }else{ //need to select files first
                 result.setText("Select Files First!");
                 elaborate.setEnabled(true);
             }
@@ -177,12 +180,13 @@ public class Window extends JFrame {
             result.setText("Working...");
             try{
                 PlanetCoasterWriter w = new PlanetCoasterWriter(path_old_file, path_new_file);
-                while(!w.has_finished){
-                    Thread.sleep(30);
+                while(!w.has_finished){ //wait for process to finish
+                    Thread.sleep(30); //wait 30 milliseconds
                 }
+                //process ended
                 result.setText("Done!");
                 elaborate.setEnabled(true);
-            }catch (Exception err){
+            }catch (Exception err){ //something happened
                 print_log("Error:"+err);
                 result.setText("ERROR!<br/>"+err);
                 elaborate.setEnabled(true);
