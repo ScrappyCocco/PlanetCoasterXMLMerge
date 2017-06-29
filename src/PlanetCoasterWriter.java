@@ -86,7 +86,7 @@ class PlanetCoasterWriter {
         }
         Element root_element = xml_document.createElement("localisation"); //creating root node
         root_element.setAttribute("xmlns","http://www.planetcoaster.com/CommunityTranslation");
-        xml_document.appendChild(root_element); //E la metto come base
+        xml_document.appendChild(root_element); //Setting root child element
         Element translation= xml_document.createElement("translation");
         //----------------------------------------------------------
         Element entry;
@@ -130,6 +130,14 @@ class PlanetCoasterWriter {
         has_finished = true;
     }//Constructor
 
+    //----------------------------------------------------------
+
+    /**
+     * This function format the xml file
+     * @param input the input xml to format
+     * @param indent the indentations for formatting the code
+     * @return the new code formatted
+     */
     private String prettyFormat(String input, int indent) {
         try {
             Source xmlInput = new StreamSource(new StringReader(input));
@@ -145,6 +153,8 @@ class PlanetCoasterWriter {
             throw new RuntimeException(e); // simple exception handling, please review it
         }
     }
+
+    //----------------------------------------------------------
 
     /**
      * This function merge the first array with the second, leaving the translated sentences and adding the sentences from the new file

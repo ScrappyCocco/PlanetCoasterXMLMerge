@@ -28,7 +28,7 @@ public class Window extends JFrame {
     private JButton elaborate;
 
     private String path_old_file, path_new_file;
-    private boolean done1=false,done2=false;
+    private boolean done_first_file =false, done_second_file =false;
     private JLabel result;
 
     /**
@@ -121,10 +121,10 @@ public class Window extends JFrame {
                     print_log("Selected file: " + selectedFile.getAbsolutePath());
                     labelOldFile.setText(selectedFile.getName());
                     path_old_file =selectedFile.getAbsolutePath();
-                    done1=true;
+                    done_first_file =true;
                 }
             }catch(Exception a){
-                JOptionPane.showMessageDialog(null, "Errore apertura - Causa sconosciuta", "Errore!", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Error opening the file", "ERROR!", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
@@ -138,24 +138,23 @@ public class Window extends JFrame {
         public void actionPerformed(ActionEvent e){
             try{
                 JFileChooser fileChooser = new JFileChooser();
-                javax.swing.filechooser.FileFilter f1 = new FileNameExtensionFilter("NEW Xml File", "xml"); //Imposto i filtri
+                javax.swing.filechooser.FileFilter f1 = new FileNameExtensionFilter("NEW Xml File", "xml"); //filters
                 fileChooser.addChoosableFileFilter(f1);
                 fileChooser.setFileFilter(f1);
                 fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
                 fileChooser.setMultiSelectionEnabled(false);
                 print_log("C:\\Users\\"+System.getProperty("user.name")+"\\AppData\\Local\\Frontier Developments\\Planet Coaster\\Translations");
                 fileChooser.setCurrentDirectory(new File("C:\\Users\\"+System.getProperty("user.name")+"\\AppData\\Local\\Frontier Developments\\Planet Coaster\\Translations"));
-                //System.getProperty("user.name")
                 int result = fileChooser.showOpenDialog(labelNewFile);
                 if (result == JFileChooser.APPROVE_OPTION) {
                     File selectedFile = fileChooser.getSelectedFile();
                     print_log("Selected file: " + selectedFile.getAbsolutePath());
                     labelNewFile.setText(selectedFile.getName());
                     path_new_file =selectedFile.getAbsolutePath();
-                    done2=true;
+                    done_second_file =true;
                 }
             }catch(Exception a){
-                JOptionPane.showMessageDialog(null, "Errore apertura - Causa sconosciuta", "Errore!", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Error opening the file", "ERROR!", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
@@ -164,7 +163,7 @@ public class Window extends JFrame {
 
     class Elaborate_Files implements ActionListener, Runnable{
         public void actionPerformed(ActionEvent e) {
-            if(done1&&done2) {
+            if(done_first_file && done_second_file) {
                 Thread t = new Thread(new Elaborate_Files());
                 t.start();
             }else{

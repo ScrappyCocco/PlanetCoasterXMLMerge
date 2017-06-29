@@ -33,7 +33,7 @@ Please report any bug, i did what i could but the program may not be perfect.
 ## Authors
 
 * **Franccc** - *Special Thanks to my friend Franccc for the initial code.*
-* **ScrappyCocco** - *The rest of the work (as GUI and optimizations)*
+* **ScrappyCocco** - *The rest of the work (GUI and code optimizations)*
 
 ## License
 

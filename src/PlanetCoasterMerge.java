@@ -69,7 +69,7 @@ class PlanetCoasterMerge {
     /**
      * This method scan all the nodes under the root
      * @param node the root
-     * @throws UnsupportedEncodingException if the string format is unvalid
+     * @throws UnsupportedEncodingException if the string format is not valid
      */
     private void scan_current_node(Node node) throws UnsupportedEncodingException{
         System.out.println("---------------------------");
