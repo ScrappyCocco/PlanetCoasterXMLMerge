@@ -7,9 +7,11 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites (How to download and execute)
 
-To execute this program you need Java, you can Download Java at https://www.java.com/download/
+To execute this program you need Java, you can Download Java [Here](https://www.java.com/download/)
 
-To run the code you can compile and execute with those 2 commands in cmd
+If you want to re-compile the program, you need the JDK, you can download it [Here](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
+
+To run the program you can compile and execute it with those 2 commands in cmd:
 
 ```
 javac *.java
