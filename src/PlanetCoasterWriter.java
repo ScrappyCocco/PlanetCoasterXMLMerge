@@ -146,6 +146,9 @@ class PlanetCoasterWriter {
         }
     }
 
+    /**
+     * This function merge the first array with the second, leaving the translated sentences and adding the sentences from the new file
+     */
     private void merge_arrays(){
         System.out.println("---------------------------");
         ArrayList<String> remKeys=new ArrayList<String>();
@@ -190,8 +193,6 @@ class PlanetCoasterWriter {
         System.out.println("Done!");
         System.out.println("---------------------------");
     }
-
-
     //----------------------------------------------------------
 
 }

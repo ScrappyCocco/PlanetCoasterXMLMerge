@@ -1,5 +1,5 @@
-# PlanetCoasterXMLMerge
-A little software for Planet Coaster translator that merge the old translation file with the new. (Leaving the translated sentences)
+# Planet Coaster XML Merge
+A little software for Planet Coaster translators that merge the old xml translation file with the new xml. (Leaving the translated sentences)
 
 ## Getting Started
 
@@ -26,6 +26,7 @@ The program is really easy to use: once you started it you have to choose:
 You can download it from http://cdn.gulpeyrex.com/communitytranslations/sourcedata/VERSION/StringData.xml
 
 Once you have chosen your files you can press "Process" and wait a couple of seconds until the final file (Called Final.xml) appear!
+The program may write another file called "StringLoss.txt", this file contains the sentences in the old file that aren't present in the new file and that have been removed.
 
 Please report any bug, i did what i could but the program may not be perfect.
 

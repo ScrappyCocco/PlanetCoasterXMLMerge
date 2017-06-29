@@ -31,6 +31,9 @@ public class Window extends JFrame {
     private boolean done1=false,done2=false;
     private JLabel result;
 
+    /**
+     * Draw the main window with buttons and labels...
+     */
     private Window(){
         Container background;
         JButton selectOldFile;
@@ -43,7 +46,6 @@ public class Window extends JFrame {
         background=this.getContentPane();
         ImageIcon img = new ImageIcon("icon.bmp");
         setIconImage(img.getImage());
-        //setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("icon.bmp"))); //setting the icon
         //----------------------------------------------------------------
         JPanel total_panel=new JPanel();
         total_panel.setLayout(new GridLayout(3,2));
@@ -99,6 +101,10 @@ public class Window extends JFrame {
     //---------------------------------------------------------------------------------------
     /**Listener for old file button*/
     class OldFilePath implements ActionListener {
+        /**
+         * This listener open the file-chooser window to choose the old file to analyze
+         * @param e the button that called the action
+         */
         public void actionPerformed(ActionEvent e){
             try{
                 JFileChooser fileChooser = new JFileChooser();
@@ -125,6 +131,10 @@ public class Window extends JFrame {
     //---------------------------------------------------------------------------------------
     /**Listener for new file button*/
     class NewFilePath implements ActionListener {
+        /**
+         * This listener open the file-chooser window to choose the new file to analyze
+         * @param e the button that called the action
+         */
         public void actionPerformed(ActionEvent e){
             try{
                 JFileChooser fileChooser = new JFileChooser();
