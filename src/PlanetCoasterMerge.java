@@ -18,7 +18,6 @@ import java.util.ArrayList;
 //CLASS
 /**
  * This class read a single planet coaster xml file storing the data in two arrays: Keys and Values
- * @author ScrappyCocco
  * */
 class PlanetCoasterMerge {
     ArrayList<String> Keys; //The translation Keys

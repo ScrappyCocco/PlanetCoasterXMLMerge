@@ -21,24 +21,23 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-
+//CLASS
+/**
+ * This class create the main window with the buttons to process the 2 files and create the new file
+ * */
 public class Window extends JFrame {
 
-    private JLabel labelOldFile;
-    private JLabel labelNewFile;
-    private JButton elaborate;
+    private JLabel labelOldFile, labelNewFile, result;
+    private JButton elaborate,selectOldFile,selectNewFile;
 
     private String path_old_file, path_new_file;
     private boolean done_first_file =false, done_second_file =false;
-    private JLabel result;
 
     /**
      * Draw the main window with buttons and labels...
      */
     private Window(){
         Container background;
-        JButton selectOldFile;
-        JButton selectNewFile;
 
         print_log("Program started!");
         print_log("Creating the Window...!");
@@ -110,7 +109,7 @@ public class Window extends JFrame {
     }
 
     //---------------------------------------------------------------------------------------
-    /**Listener for old file button*/
+    /**Listener for old file button chooser*/
     class OldFilePath implements ActionListener {
         /**
          * This listener open the file-chooser window to choose the old file to analyze
@@ -141,7 +140,7 @@ public class Window extends JFrame {
         }
     }
     //---------------------------------------------------------------------------------------
-    /**Listener for new file button*/
+    /**Listener for new file button chooser*/
     class NewFilePath implements ActionListener {
         /**
          * This listener open the file-chooser window to choose the new file to analyze
@@ -184,8 +183,21 @@ public class Window extends JFrame {
             }
         }
 
+        /**
+         * Function that enable/disable the buttons during files processing
+         * @param active is the buttons should be active or not
+         */
+        void toggleButtons(boolean active){
+            elaborate.setEnabled(active);
+            selectOldFile.setEnabled(active);
+            selectNewFile.setEnabled(active);
+        }//toggle_buttons
+
+        /**
+         * Thread that merge the two files and create the new file
+         */
         public void run() {
-            elaborate.setEnabled(false);
+            toggleButtons(false);
             result.setText("Working...");
             try{
                 PlanetCoasterWriter w = new PlanetCoasterWriter(path_old_file, path_new_file);
@@ -194,14 +206,14 @@ public class Window extends JFrame {
                 }
                 //process ended
                 result.setText("Done!");
-                elaborate.setEnabled(true);
+                toggleButtons(true);
             }catch (Exception err){ //something happened
                 print_log("Error:"+err);
-                result.setText("ERROR!<br/>"+err);
-                elaborate.setEnabled(true);
+                result.setText("ERROR!<br/>\n"+err);
+                toggleButtons(true);
             }
-        }
-    }//Class
+        }//run_thread
+    }//Elaborate_Class
     //---------------------------------------------------------------------------------------
     /**Function to pretty print the log with time
      @param s String to print*/

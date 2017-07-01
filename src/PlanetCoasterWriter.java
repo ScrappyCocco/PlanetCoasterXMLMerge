@@ -28,7 +28,6 @@ import javax.xml.transform.stream.StreamSource;
 //CLASS
 /**
  * This class call the Merge to the 2 files and merge them into a single array, then write it into the final file
- * @author ScrappyCocco
  * */
 class PlanetCoasterWriter {
     private ArrayList<String> oldKeys;
