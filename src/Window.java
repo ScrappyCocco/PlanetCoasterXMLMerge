@@ -1,6 +1,6 @@
 //IMPORTS
+import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -17,6 +17,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -44,8 +45,6 @@ public class Window extends JFrame {
         setSize(500,500);
         setTitle("PlanetCoaster Translation");
         background=this.getContentPane();
-        ImageIcon img = new ImageIcon("icon.bmp");
-        setIconImage(img.getImage());
         //----------------------------------------------------------------
         JPanel total_panel=new JPanel();
         total_panel.setLayout(new GridLayout(3,2));
@@ -58,8 +57,8 @@ public class Window extends JFrame {
         oldL.add(labelOldFile);
         JPanel oldS=new JPanel();
         oldS.add(selectOldFile);
-        oldL.setBorder(new TitledBorder("Old XML File"));
-        oldS.setBorder(new TitledBorder("Old XML File"));
+        oldL.setBorder(new TitledBorder("Old XML Filename"));
+        oldS.setBorder(new TitledBorder("Old XML File Chooser"));
         total_panel.add(oldL);
         total_panel.add(oldS);
         //----------------------------------------------------------------
@@ -71,13 +70,13 @@ public class Window extends JFrame {
         newL.add(labelNewFile);
         JPanel newS=new JPanel();
         newS.add(selectNewFile);
-        newL.setBorder(new TitledBorder("New XML File"));
-        newS.setBorder(new TitledBorder("New XML File"));
+        newL.setBorder(new TitledBorder("New XML Filename"));
+        newS.setBorder(new TitledBorder("New XML File Chooser"));
         total_panel.add(newL);
         total_panel.add(newS);
         //----------------------------------------------------------------
         //elaborate file - panel and buttons
-        elaborate=new JButton("Process");
+        elaborate=new JButton("Process Files");
         elaborate.addActionListener(new Elaborate_Files());
 
         JPanel elaborate_panel = new JPanel();
@@ -97,8 +96,17 @@ public class Window extends JFrame {
         print_log("Window Fully Created!");
         setResizable(false);
         setLocationRelativeTo(null);
+        //Setting program icon
+        try {
+            setIconImage(ImageIO.read(new File("planet_icon.png")));
+        }
+        catch (IOException exc) {
+            print_log("Icon \"planet_icon.png\" not found in execution dir...");
+            exc.printStackTrace();
+        }
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setVisible(true);
+
     }
 
     //---------------------------------------------------------------------------------------
@@ -116,6 +124,7 @@ public class Window extends JFrame {
                 fileChooser.setFileFilter(f1); //set the current filter
                 fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
                 fileChooser.setMultiSelectionEnabled(false); //can select only a file
+                //Try to open the frontier directory
                 print_log("C:\\Users\\"+System.getProperty("user.name")+"\\AppData\\Local\\Frontier Developments\\Planet Coaster\\Translations");
                 fileChooser.setCurrentDirectory(new File("C:\\Users\\"+System.getProperty("user.name")+"\\AppData\\Local\\Frontier Developments\\Planet Coaster\\Translations"));
                 int result = fileChooser.showOpenDialog(labelOldFile);
