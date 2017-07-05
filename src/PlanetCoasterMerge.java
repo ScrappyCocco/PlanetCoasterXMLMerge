@@ -18,11 +18,13 @@ import java.util.ArrayList;
 //CLASS
 /**
  * This class read a single planet coaster xml file storing the data in two arrays: Keys and Values
+ * The Keys array is made of Strings because the translations Keys are simple strings
+ * The translated phrase is stored into a byte[] because i can store it in UTF-8
  * */
 class PlanetCoasterMerge {
     ArrayList<String> Keys; //The translation Keys
     ArrayList<byte[]> utf8_values; //The translation values
-    private boolean isnewFile;
+    private boolean isnewFile; //if is the new file i need to store comments
 
     /**
      * The constructor method open the file and call a method to fill the arrays
@@ -68,7 +70,8 @@ class PlanetCoasterMerge {
 
     /**
      * This method scan all the nodes under the root
-     * @param node the root
+     * Scanning all the nodes this method fill the two arrays with all the values
+     * @param node the root node, where i start to scan
      * @throws UnsupportedEncodingException if the string format is not valid
      */
     private void scan_current_node(Node node) throws UnsupportedEncodingException{
@@ -99,5 +102,4 @@ class PlanetCoasterMerge {
         System.out.println("---------------------------");
     }
     //----------------------------------------------------------
-
-}
+}//end_class

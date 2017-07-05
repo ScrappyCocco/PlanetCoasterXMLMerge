@@ -27,14 +27,14 @@ import javax.xml.transform.stream.StreamSource;
 
 //CLASS
 /**
- * This class call the Merge to the 2 files and merge them into a single array, then write it into the final file
+ * This class call the Merge for the 2 files and merge them into a single array, then write it into the final file
  * */
 class PlanetCoasterWriter {
-    private ArrayList<String> oldKeys;
-    private ArrayList<String> newKeys;
-
+    //Copy array to fast access
+    private ArrayList<String> oldKeys, newKeys;
     private ArrayList<byte[]> oldUTFTrans, newUTFTrans;
-    boolean has_finished = false;
+
+    boolean has_finished = false; //for the thread, to check the end
     //----------------------------------------------------------
     private Document xml_document;
     //----------------------------------------------------------
@@ -123,6 +123,7 @@ class PlanetCoasterWriter {
         output=prettyFormat(output,2);
         System.out.println("Saving the file..." );
         try{
+            //write the file using utf-8
             Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(output_file_name), "UTF-8"));
             out.write(output);
             out.close();
@@ -139,7 +140,7 @@ class PlanetCoasterWriter {
      * This function format the xml file
      * @param input the input xml to format
      * @param indent the indentations for formatting the code
-     * @return the new code formatted
+     * @return the new xml code formatted
      */
     private String prettyFormat(String input, int indent) {
         try {
@@ -160,7 +161,8 @@ class PlanetCoasterWriter {
     //----------------------------------------------------------
 
     /**
-     * This function merge the first array with the second, leaving the translated sentences and adding the sentences from the new file
+     * This function merge the first array with the second,
+     * leaving the translated sentences and adding the sentences from the new file
      */
     private void merge_arrays(){
         System.out.println("---------------------------");
@@ -194,7 +196,7 @@ class PlanetCoasterWriter {
         System.out.println("Start Size:"+start_size+" Found:"+values_found+" Removed:"+values_removed);
         System.out.println("Final Size OldArray:"+oldKeys.size());
         System.out.print("Creating string loss file...");
-        try{
+        try{ //print all the lost strings
             PrintWriter writer = new PrintWriter("StringLoss.txt", "UTF-8");
             if((removed_values.size()!=values_removed||remKeys.size()!=values_removed)){
                 System.out.println("\n(Something's strange)\n");

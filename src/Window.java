@@ -23,7 +23,8 @@ import java.util.Date;
 
 //CLASS
 /**
- * This class create the main window with the buttons to process the 2 files and create the new file
+ * This class create the main window with the buttons to choose the 2 files and to create the new file
+ * This class has a listener for each button, plus a thread for the processing.
  * */
 public class Window extends JFrame {
 
@@ -35,6 +36,7 @@ public class Window extends JFrame {
 
     /**
      * Draw the main window with buttons and labels...
+     * (this is not an important part of the program)
      */
     private Window(){
         Container background;
@@ -109,7 +111,7 @@ public class Window extends JFrame {
     }
 
     //---------------------------------------------------------------------------------------
-    /**Listener for old file button chooser*/
+    /**Listener for OLD file button chooser*/
     class OldFilePath implements ActionListener {
         /**
          * This listener open the file-chooser window to choose the old file to analyze
@@ -127,8 +129,9 @@ public class Window extends JFrame {
                 print_log("C:\\Users\\"+System.getProperty("user.name")+"\\AppData\\Local\\Frontier Developments\\Planet Coaster\\Translations");
                 fileChooser.setCurrentDirectory(new File("C:\\Users\\"+System.getProperty("user.name")+"\\AppData\\Local\\Frontier Developments\\Planet Coaster\\Translations"));
                 int result = fileChooser.showOpenDialog(labelOldFile);
+                //check if the result is the "approve" button
                 if (result == JFileChooser.APPROVE_OPTION) { //if the user choose a file
-                    File selectedFile = fileChooser.getSelectedFile();
+                    File selectedFile = fileChooser.getSelectedFile(); //Take that file
                     print_log("Selected file: " + selectedFile.getAbsolutePath());
                     labelOldFile.setText(selectedFile.getName());
                     path_old_file =selectedFile.getAbsolutePath();
@@ -137,10 +140,10 @@ public class Window extends JFrame {
             }catch(Exception a){
                 JOptionPane.showMessageDialog(null, "Error opening the file", "ERROR!", JOptionPane.ERROR_MESSAGE);
             }
-        }
-    }
+        }//button_pressed
+    }//OldFilePath_class_end
     //---------------------------------------------------------------------------------------
-    /**Listener for new file button chooser*/
+    /**Listener for NEW file button chooser*/
     class NewFilePath implements ActionListener {
         /**
          * This listener open the file-chooser window to choose the new file to analyze
@@ -157,8 +160,8 @@ public class Window extends JFrame {
                 print_log("C:\\Users\\"+System.getProperty("user.name")+"\\AppData\\Local\\Frontier Developments\\Planet Coaster\\Translations");
                 fileChooser.setCurrentDirectory(new File("C:\\Users\\"+System.getProperty("user.name")+"\\AppData\\Local\\Frontier Developments\\Planet Coaster\\Translations"));
                 int result = fileChooser.showOpenDialog(labelNewFile);
-                if (result == JFileChooser.APPROVE_OPTION) {
-                    File selectedFile = fileChooser.getSelectedFile();
+                if (result == JFileChooser.APPROVE_OPTION) { //if the user choose a file
+                    File selectedFile = fileChooser.getSelectedFile(); //Take that file
                     print_log("Selected file: " + selectedFile.getAbsolutePath());
                     labelNewFile.setText(selectedFile.getName());
                     path_new_file =selectedFile.getAbsolutePath();
@@ -167,10 +170,12 @@ public class Window extends JFrame {
             }catch(Exception a){
                 JOptionPane.showMessageDialog(null, "Error opening the file", "ERROR!", JOptionPane.ERROR_MESSAGE);
             }
-        }
-    }
+        }//button_pressed
+    }//NewFilePath_class_end
     //---------------------------------------------------------------------------------------
-    /**Listener that merge the 2 files with a thread*/
+    /**Listener that merge the 2 files with a thread
+     * (using PlanetCoasterWriter class)
+     * */
 
     class Elaborate_Files implements ActionListener, Runnable{
         public void actionPerformed(ActionEvent e) {
@@ -181,7 +186,7 @@ public class Window extends JFrame {
                 result.setText("Select Files First!");
                 elaborate.setEnabled(true);
             }
-        }
+        }//button_pressed
 
         /**
          * Function that enable/disable the buttons during files processing
@@ -195,6 +200,7 @@ public class Window extends JFrame {
 
         /**
          * Thread that merge the two files and create the new file
+         * The thread wait until PlanetCoasterWriter has finished (without blocking the program)
          */
         public void run() {
             toggleButtons(false);
