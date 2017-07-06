@@ -51,7 +51,7 @@ class PlanetCoasterMerge {
             if(!start_node.getNodeName().equals("translation")){
                 start_node=start_node.getNextSibling();
                 if(!start_node.getNodeName().equals("translation")){
-                    throw new Exception("Bad File!");
+                    throw new Exception("Bad File!"); //can't find the start node, error
                 }
             }
             scan_current_node(start_node); //starting from the root
@@ -64,7 +64,7 @@ class PlanetCoasterMerge {
         }catch(Exception e){ //generic error
             System.out.println("Generic Error-->"+e.getMessage()+"-");
             e.printStackTrace();
-            System.exit(1); //
+            System.exit(1); //generic error
         }
     }//Constructor
 

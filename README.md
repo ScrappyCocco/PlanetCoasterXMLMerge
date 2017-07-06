@@ -18,7 +18,7 @@ javac *.java
 java Window
 ```
 
-Otherwise you can download (and execute) the jar file [Here](out/artifacts/PlanetCoasterXMLMerge_jar/)
+Otherwise you can download (and execute) the .jar or the .exe file [Here](out/artifacts/PlanetCoasterXMLMerge_jar/)
 
 ### Using the program
 
