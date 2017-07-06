@@ -24,8 +24,9 @@ Otherwise you can download (and execute) the .jar or the .exe file [Here](out/ar
 
 The program is really easy to use: once you started it you have to choose:
 * Your OLD translation file (for example 1.2.2)
-* The NEW and **Original** translation file (for example 1.3).
+* The NEW and **Original** translation file (for example 1.3.1).
 You can download it from http://cdn.gulpeyrex.com/communitytranslations/sourcedata/VERSION/StringData.xml
+(you have to change VERSION with the number, for example *.../1.3.1/StringData.xml*)
 
 Once you have chosen your files you can press "Process" and wait a couple of seconds until the final file (Called Final.xml) appear!
 The program may write another file called "StringLoss.txt", this file contains the sentences in the old file that aren't present in the new file and that have been removed.
