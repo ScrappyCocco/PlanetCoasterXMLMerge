@@ -11,7 +11,7 @@ To execute this program you need Java, you can Download Java [Here](https://www.
 
 If you want to re-compile the program, you need the JDK, you can download it [Here](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
 
-To run the program you can compile and execute it with those 2 commands in cmd:
+To run the program you can re-compile it and execute it with those 2 commands in cmd:
 
 ```
 javac *.java

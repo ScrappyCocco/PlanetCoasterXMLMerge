@@ -197,18 +197,22 @@ class PlanetCoasterWriter {
         System.out.println("Final Size OldArray:"+oldKeys.size());
         System.out.print("Creating string loss file...");
         try{ //print all the lost strings
-            PrintWriter writer = new PrintWriter("StringLoss.txt", "UTF-8");
-            if((removed_values.size()!=values_removed||remKeys.size()!=values_removed)){
-                System.out.println("\n(Something's strange)\n");
+            if(values_removed>0) {
+                PrintWriter writer = new PrintWriter("StringLoss.txt", "UTF-8");
+                if ((removed_values.size() != values_removed) || (remKeys.size() != values_removed)) {
+                    System.out.println("\n(Something's strange)\n");
+                }
+                for (int i = 0; i < removed_values.size(); i++) {
+                    writer.println(remKeys.get(i) + " - " + removed_values.get(i));
+                }
+                writer.close();
+            }else{
+                System.out.println("\nSkipped creation of StringLoss.txt, no string removed...");
             }
-            for(int i=0;i<removed_values.size();i++) {
-                writer.println(remKeys.get(i)+" - "+removed_values.get(i));
-            }
-            writer.close();
         } catch (Exception e) {
-            System.out.println("\nError creating the file:"+e);
+            System.out.println("\nError creating the file:"+e.toString());
         }
-        System.out.println("Done!");
+        System.out.println("Merge Done!");
         System.out.println("---------------------------");
     }
     //----------------------------------------------------------

@@ -95,9 +95,9 @@ class PlanetCoasterMerge {
                         Keys.add("Comment");
                         utf8_values.add(comment.getData().getBytes(Charset.forName("UTF-8")));
                     }
-                }
-            }
-        }
+                }//is_new_file
+            }//else_is_a_comment
+        }//for_end
         System.out.println("Arrays Created!");
         System.out.println("---------------------------");
     }
