@@ -20,6 +20,8 @@ java Window
 
 Otherwise you can download (and execute) the .jar or the .exe file [Here](out/artifacts/PlanetCoasterXMLMerge_jar/)
 
+You can download the last program release [Here](https://github.com/ScrappyCocco/PlanetCoasterXMLMerge/releases)
+
 ### Using the program
 
 The program is really easy to use: once you started it you have to choose:
