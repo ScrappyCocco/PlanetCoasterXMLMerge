@@ -1,6 +1,8 @@
 # Planet Coaster XML Merge
 A little software for Planet Coaster translators that merge the old xml translation file with the new xml. (Leaving the translated sentences)
 
+You can use it too for checking duplicates.
+
 ## Getting Started
 
 These instructions will get you a copy of the program for development and testing purposes, you can edit it or just use it for Planet Coaster XML files.
@@ -18,9 +20,11 @@ javac *.java
 java Window
 ```
 
+(You need "Java" in the PATH to use it from cmd, see it how [Here](https://kingluddite.com/tools/how-do-i-add-java-to-my-windows-path))
+
 Otherwise you can download (and execute) the .jar or the .exe file [Here](out/artifacts/PlanetCoasterXMLMerge_jar/)
 
-You can download the last program release [Here](https://github.com/ScrappyCocco/PlanetCoasterXMLMerge/releases)
+**You can download the last program release [Here](https://github.com/ScrappyCocco/PlanetCoasterXMLMerge/releases)**
 
 ### Using the program
 
@@ -33,7 +37,9 @@ You can download it from http://cdn.gulpeyrex.com/communitytranslations/sourceda
 Once you have chosen your files you can press "Process" and wait a couple of seconds until the final file (Called Final.xml) appear!
 The program may write another file called "StringLoss.txt", this file contains the sentences in the old file that aren't present in the new file and that have been removed.
 
-Please report any bug, i did what i could but the program may not be perfect.
+To check for duplicates just select the file as "Old file" and click the button, this will create a txt file if duplicates are found.
+
+Please report any bug, the program may not be perfect.
 
 ## Authors
 

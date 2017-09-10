@@ -1,13 +1,6 @@
 //IMPORTS
 import javax.imageio.ImageIO;
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.WindowConstants;
+import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.Color;
@@ -18,7 +11,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 //CLASS
@@ -29,7 +24,7 @@ import java.util.Date;
 public class Window extends JFrame {
 
     private JLabel labelOldFile, labelNewFile, result;
-    private JButton elaborate,selectOldFile,selectNewFile;
+    private JButton elaborate,selectOldFile,selectNewFile, duplicates;
 
     private String path_old_file, path_new_file;
     private boolean done_first_file =false, done_second_file =false;
@@ -51,7 +46,7 @@ public class Window extends JFrame {
         total_panel.setLayout(new GridLayout(3,2));
         //----------------------------------------------------------------
         //old file - panel and buttons
-        labelOldFile=new JLabel("OLD File name");
+        labelOldFile=new JLabel("<html>OLD File name <br/> (Or File to check duplicates)</html>");
         selectOldFile=new JButton("Select Old File");
         selectOldFile.addActionListener(new OldFilePath());
         JPanel oldL=new JPanel();
@@ -80,10 +75,15 @@ public class Window extends JFrame {
         elaborate=new JButton("Process Files");
         elaborate.addActionListener(new Elaborate_Files());
 
-        JPanel elaborate_panel = new JPanel();
-        elaborate_panel.add(elaborate);
+        duplicates = new JButton("Check for Duplicates");
+        duplicates.addActionListener(new Find_Duplicates());
+
+        JPanel buttons_execute_panel = new JPanel();
+        buttons_execute_panel.setLayout(new GridLayout(2,1));
+        buttons_execute_panel.add(elaborate);
+        buttons_execute_panel.add(duplicates);
         JPanel wrapperPanel1 = new JPanel(new GridBagLayout());
-        wrapperPanel1.add(elaborate_panel);
+        wrapperPanel1.add(buttons_execute_panel);
         wrapperPanel1.setBorder(BorderFactory.createLineBorder(Color.black));
         total_panel.add(wrapperPanel1);
 
@@ -173,30 +173,32 @@ public class Window extends JFrame {
         }//button_pressed
     }//NewFilePath_class_end
     //---------------------------------------------------------------------------------------
+    /**
+     * Function that enable/disable the buttons during files processing
+     * @param active is the buttons should be active or not
+     */
+    private void toggleButtons(boolean active){
+        elaborate.setEnabled(active);
+        selectOldFile.setEnabled(active);
+        selectNewFile.setEnabled(active);
+        duplicates.setEnabled(active);
+    }//toggle_buttons
+    //---------------------------------------------------------------------------------------
     /**Listener that merge the 2 files with a thread
      * (using PlanetCoasterWriter class)
      * */
 
     class Elaborate_Files implements ActionListener, Runnable{
+
         public void actionPerformed(ActionEvent e) {
             if(done_first_file && done_second_file) { //only if both are true
                 Thread t = new Thread(new Elaborate_Files()); //i can create the new file
                 t.start(); //starting the process thread
             }else{ //need to select files first
                 result.setText("Select Files First!");
-                elaborate.setEnabled(true);
+                toggleButtons(true);
             }
         }//button_pressed
-
-        /**
-         * Function that enable/disable the buttons during files processing
-         * @param active is the buttons should be active or not
-         */
-        void toggleButtons(boolean active){
-            elaborate.setEnabled(active);
-            selectOldFile.setEnabled(active);
-            selectNewFile.setEnabled(active);
-        }//toggle_buttons
 
         /**
          * Thread that merge the two files and create the new file
@@ -220,6 +222,77 @@ public class Window extends JFrame {
             }
         }//run_thread
     }//Elaborate_Class
+    //---------------------------------------------------------------------------------------
+    /**Listener that open a file, and check for keys duplicates, saving them in a TXT file
+     * (using PlanetCoasterMerge class)
+     * */
+
+    class Find_Duplicates implements ActionListener, Runnable{
+
+        public void actionPerformed(ActionEvent e) {
+            if(done_first_file) { //only if both are true
+                Thread t = new Thread(new Find_Duplicates()); //i can create the new file
+                t.start(); //starting the process thread
+            }else{ //need to select files first
+                result.setText("Select the File to find Duplicates!");
+                toggleButtons(true);
+            }
+        }//button_pressed
+
+        /**
+         * Thread that read a planet coaster file and check for Keys duplicates
+         * The thread wait until the file creation has ended
+         */
+        public void run() {
+            toggleButtons(false);
+            result.setText("Working...");
+            try{
+                PlanetCoasterMerge fileSelected = null;
+                if(done_first_file) {
+                    fileSelected = new PlanetCoasterMerge(path_old_file, false);
+                }
+                if(fileSelected != null) {
+                    ArrayList<String> duplicatesKeys = new ArrayList<String>();
+                    //For searching for duplicates
+                    for (int i = 0; i < fileSelected.Keys.size(); i++) {
+                        String compare_string = fileSelected.Keys.get(i);
+                        for (int k = 0; k < fileSelected.Keys.size(); k++) {
+                            //If the index is different AND the two keys are the same AND is not already in the final array
+                            if(i!=k && compare_string.equals(fileSelected.Keys.get(k)) && !duplicatesKeys.contains(compare_string)){
+                                duplicatesKeys.add(compare_string);
+                            }
+                        }//inside-for
+                    }//big for
+                    print_log("Found " + duplicatesKeys.size() + " duplicates!");
+                    try{ //print all the lost strings
+                        if(duplicatesKeys.size()>0) {
+                            PrintWriter writer = new PrintWriter("DuplicatesFound.txt", "UTF-8");
+                            for (String duplicatesKey : duplicatesKeys) {
+                                writer.println("\"" + duplicatesKey + "\""); //print string to file
+                            }
+                            writer.close();
+                        }else{
+                            System.out.println("\nSkipped creation of DuplicatesFound.txt, no string removed...");
+                        }
+                    } catch (Exception e) {
+                        System.out.println("\nError creating the file:"+e.toString());
+                    }
+                }else {//if not null
+                    print_log("Error - File merge was null?");
+                    result.setText("Error - File merge was null?");
+                }
+                print_log("Duplicates search ended");
+                //process ended
+                result.setText("Done!");
+                toggleButtons(true);
+                System.out.println("---------------------------");
+            }catch (Exception err){ //something happened
+                print_log("Error:"+err);
+                result.setText("ERROR!<br/>\n"+err);
+                toggleButtons(true);
+            }
+        }//run_thread
+    }//Duplicates_Class
     //---------------------------------------------------------------------------------------
     /**Function to pretty print the log with time
      @param s String to print*/
