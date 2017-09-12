@@ -1,6 +1,13 @@
 //IMPORTS
 import javax.imageio.ImageIO;
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.WindowConstants;
 import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.Color;
@@ -29,6 +36,9 @@ public class Window extends JFrame {
     private String path_old_file, path_new_file;
     private boolean done_first_file =false, done_second_file =false;
 
+    private String default_path = "C:\\Users\\"+System.getProperty("user.name")+"\\AppData\\Local\\Frontier Developments\\Planet Coaster\\Translations";
+    private String version = "1.12";
+
     /**
      * Draw the main window with buttons and labels...
      * (this is not an important part of the program)
@@ -39,7 +49,7 @@ public class Window extends JFrame {
         print_log("Program started!");
         print_log("Creating the Window...!");
         setSize(500,500);
-        setTitle("PlanetCoaster Translation");
+        setTitle("PlanetCoaster Translation - v" + version);
         background=this.getContentPane();
         //----------------------------------------------------------------
         JPanel total_panel=new JPanel();
@@ -126,8 +136,8 @@ public class Window extends JFrame {
                 fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
                 fileChooser.setMultiSelectionEnabled(false); //can select only a file
                 //Try to open the frontier directory
-                print_log("C:\\Users\\"+System.getProperty("user.name")+"\\AppData\\Local\\Frontier Developments\\Planet Coaster\\Translations");
-                fileChooser.setCurrentDirectory(new File("C:\\Users\\"+System.getProperty("user.name")+"\\AppData\\Local\\Frontier Developments\\Planet Coaster\\Translations"));
+                print_log(default_path);
+                fileChooser.setCurrentDirectory(new File(default_path));
                 int result = fileChooser.showOpenDialog(labelOldFile);
                 //check if the result is the "approve" button
                 if (result == JFileChooser.APPROVE_OPTION) { //if the user choose a file
@@ -157,8 +167,8 @@ public class Window extends JFrame {
                 fileChooser.setFileFilter(f1);
                 fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
                 fileChooser.setMultiSelectionEnabled(false);
-                print_log("C:\\Users\\"+System.getProperty("user.name")+"\\AppData\\Local\\Frontier Developments\\Planet Coaster\\Translations");
-                fileChooser.setCurrentDirectory(new File("C:\\Users\\"+System.getProperty("user.name")+"\\AppData\\Local\\Frontier Developments\\Planet Coaster\\Translations"));
+                print_log(default_path);
+                fileChooser.setCurrentDirectory(new File(default_path));
                 int result = fileChooser.showOpenDialog(labelNewFile);
                 if (result == JFileChooser.APPROVE_OPTION) { //if the user choose a file
                     File selectedFile = fileChooser.getSelectedFile(); //Take that file
@@ -189,7 +199,7 @@ public class Window extends JFrame {
      * */
 
     class Elaborate_Files implements ActionListener, Runnable{
-
+        //Function called when the elaborate button is pressed
         public void actionPerformed(ActionEvent e) {
             if(done_first_file && done_second_file) { //only if both are true
                 Thread t = new Thread(new Elaborate_Files()); //i can create the new file
@@ -208,16 +218,21 @@ public class Window extends JFrame {
             toggleButtons(false);
             result.setText("Working...");
             try{
-                PlanetCoasterWriter w = new PlanetCoasterWriter(path_old_file, path_new_file);
-                while(!w.has_finished){ //wait for process to finish
-                    Thread.sleep(30); //wait 30 milliseconds
+                try {
+                    PlanetCoasterWriter w = new PlanetCoasterWriter(path_old_file, path_new_file);
+                    while (!w.has_finished) { //wait for process to finish
+                        Thread.sleep(30); //wait 30 milliseconds
+                    }
+                    //process ended
+                    result.setText("Done!");
+                }catch(Exception err){
+                    print_log("Error:"+err);
+                    result.setText("<html>ERROR!<br/>\n"+err+"</html>");
                 }
-                //process ended
-                result.setText("Done!");
                 toggleButtons(true);
             }catch (Exception err){ //something happened
                 print_log("Error:"+err);
-                result.setText("ERROR!<br/>\n"+err);
+                result.setText("<html>ERROR!<br/>\n"+err+"</html>");
                 toggleButtons(true);
             }
         }//run_thread
@@ -228,7 +243,7 @@ public class Window extends JFrame {
      * */
 
     class Find_Duplicates implements ActionListener, Runnable{
-
+        //Function called when the duplicates button is pressed
         public void actionPerformed(ActionEvent e) {
             if(done_first_file) { //only if both are true
                 Thread t = new Thread(new Find_Duplicates()); //i can create the new file
@@ -244,22 +259,43 @@ public class Window extends JFrame {
          * The thread wait until the file creation has ended
          */
         public void run() {
+            boolean errors = false;
             toggleButtons(false);
             result.setText("Working...");
             try{
                 PlanetCoasterMerge fileSelected = null;
-                if(done_first_file) {
-                    fileSelected = new PlanetCoasterMerge(path_old_file, false);
+                try {
+                    if (done_first_file) {
+                        //true for checking comments
+                        fileSelected = new PlanetCoasterMerge(path_old_file, true);
+                    }
+                }catch(Exception err){ //Probably the xml file is not valid
+                    errors=true;
+                    fileSelected = null;
+                    print_log("Error:"+err);
+                    result.setText("<html>ERROR!<br/>"+err+"</html>");
                 }
                 if(fileSelected != null) {
                     ArrayList<String> duplicatesKeys = new ArrayList<String>();
                     //For searching for duplicates
                     for (int i = 0; i < fileSelected.Keys.size(); i++) {
                         String compare_string = fileSelected.Keys.get(i);
+                        if(compare_string.equals("Comment")){ //The string is a comment. i have to get it
+                            compare_string = new String(fileSelected.utf8_values.get(i), "UTF-8");
+                        }
                         for (int k = 0; k < fileSelected.Keys.size(); k++) {
-                            //If the index is different AND the two keys are the same AND is not already in the final array
-                            if(i!=k && compare_string.equals(fileSelected.Keys.get(k)) && !duplicatesKeys.contains(compare_string)){
-                                duplicatesKeys.add(compare_string);
+                            //removed_values.add(new String(oldUTFTrans.get(0), "UTF-8"));
+                            if(fileSelected.Keys.get(k).equals("Comment") && i != k){ //The string is a comment. i have to get it
+                                //Getting the comment and comparing it
+                                String comment_value = new String(fileSelected.utf8_values.get(k), "UTF-8");
+                                if(comment_value.equals(compare_string) && !duplicatesKeys.contains(compare_string)){ //If the two comments are the same and the comment is not in the array
+                                    duplicatesKeys.add(compare_string);
+                                }
+                            }else {
+                                //If the index is different AND the two keys are the same AND is not already in the final array
+                                if (i != k && compare_string.equals(fileSelected.Keys.get(k)) && !duplicatesKeys.contains(compare_string)) {
+                                    duplicatesKeys.add(compare_string);
+                                }
                             }
                         }//inside-for
                     }//big for
@@ -272,18 +308,25 @@ public class Window extends JFrame {
                             }
                             writer.close();
                         }else{
-                            System.out.println("\nSkipped creation of DuplicatesFound.txt, no string removed...");
+                            print_log("\nSkipped creation of DuplicatesFound.txt, no string removed...");
                         }
                     } catch (Exception e) {
-                        System.out.println("\nError creating the file:"+e.toString());
+                        errors=true;
+                        print_log("\nError creating the file:"+e.toString());
                     }
                 }else {//if not null
-                    print_log("Error - File merge was null?");
-                    result.setText("Error - File merge was null?");
+                    if(!errors) {
+                        errors = true;
+                        print_log("Error - File merge was null? Check log");
+                        result.setText("Error - File merge was null? Check log");
+                    }
                 }
                 print_log("Duplicates search ended");
                 //process ended
-                result.setText("Done!");
+                if(!errors)
+                {
+                    result.setText("Done!");
+                }
                 toggleButtons(true);
                 System.out.println("---------------------------");
             }catch (Exception err){ //something happened

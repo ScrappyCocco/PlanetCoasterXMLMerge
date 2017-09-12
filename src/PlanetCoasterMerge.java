@@ -30,7 +30,7 @@ class PlanetCoasterMerge {
      * The constructor method open the file and call a method to fill the arrays
      * @param file_top_open the path with the filename to open
      * @param isfinalfile if is the final file i need to consider comments
-     * @throws Exception throw an invalid UTF-8 charset exception (from scan_current_node())
+     * @throws Exception throw an invalid UTF-8 charset exception (from scan_current_node()) or a generic Exception if the XML file is not valid
      */
     PlanetCoasterMerge(String file_top_open, boolean isfinalfile) throws Exception{
         Element root; //The root element of the xml file
@@ -51,20 +51,17 @@ class PlanetCoasterMerge {
             if(!start_node.getNodeName().equals("translation")){
                 start_node=start_node.getNextSibling();
                 if(!start_node.getNodeName().equals("translation")){
-                    throw new Exception("Bad File!"); //can't find the start node, error
+                    throw new Exception("Bad PlanetCoaster-XML File! Check your XML file"); //can't find the start node, error
                 }
             }
             scan_current_node(start_node); //starting from the root
-        }catch(SAXParseException e){
-            System.out.println("Error-->"+e.getMessage());
-            System.exit(1); //1 error reading the xml
-        }catch(FileNotFoundException e){
-            System.out.println("Error file not found-->"+e.getMessage());
-            System.exit(1); //1 error opening the xml
+        }catch(SAXParseException e){ //error reading the xml file
+            throw new Exception("Error-->"+e.getMessage());
+        }catch(FileNotFoundException e){ //error opening the file
+            throw new Exception("Error file not found-->"+e.getMessage());
         }catch(Exception e){ //generic error
-            System.out.println("Generic Error-->"+e.getMessage()+"-");
             e.printStackTrace();
-            System.exit(1); //generic error
+            throw new Exception("Generic Error-->"+e.getMessage());
         }
     }//Constructor
 

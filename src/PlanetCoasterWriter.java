@@ -48,10 +48,15 @@ class PlanetCoasterWriter {
     PlanetCoasterWriter(String oldPath,String newPath) throws Exception{
         String output_file_name = "Final.xml";
 
-        System.out.println("First File:");//second file (old)
-        PlanetCoasterMerge oldFile = new PlanetCoasterMerge(oldPath, false);
-        System.out.println("Second File:"); //second file (new)
-        PlanetCoasterMerge newFile = new PlanetCoasterMerge(newPath, true);
+        PlanetCoasterMerge oldFile, newFile;
+        try {
+            System.out.println("First File:");//second file (old)
+            oldFile = new PlanetCoasterMerge(oldPath, false);
+            System.out.println("Second File:"); //second file (new)
+            newFile = new PlanetCoasterMerge(newPath, true);
+        }catch(Exception err){
+            throw new Exception(err.toString());
+        }
         //Setting array references to keys and values
         oldKeys=oldFile.Keys;
         oldUTFTrans=oldFile.utf8_values;
