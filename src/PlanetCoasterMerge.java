@@ -30,7 +30,7 @@ class PlanetCoasterMerge {
      * The constructor method open the file and call a method to fill the arrays
      * @param file_top_open the path with the filename to open
      * @param isfinalfile if is the final file i need to consider comments
-     * @throws Exception throw an invalid UTF-8 charset exception (from scan_current_node()) or a generic Exception if the XML file is not valid
+     * @throws Exception throw an invalid UTF-8 charset exception (from scan_node()) or a generic Exception if the XML file is not valid
      */
     PlanetCoasterMerge(String file_top_open, boolean isfinalfile) throws Exception{
         Element root; //The root element of the xml file
@@ -48,17 +48,17 @@ class PlanetCoasterMerge {
             root=document_file.getDocumentElement();
             Node start_node=root.getFirstChild();
             //Choosing the First node
-            if(!start_node.getNodeName().equals("translation")){
-                start_node=start_node.getNextSibling();
-                if(!start_node.getNodeName().equals("translation")){
+            if(!start_node.getNodeName().equals("translation")){ //The first node is not "translation"
+                start_node=start_node.getNextSibling(); //Check the node after the first
+                if(!start_node.getNodeName().equals("translation")){ //The xml file is not correct
                     throw new Exception("Bad PlanetCoaster-XML File! Check your XML file"); //can't find the start node, error
                 }
             }
-            scan_current_node(start_node); //starting from the root
+            scan_node(start_node); //starting from the root
         }catch(SAXParseException e){ //error reading the xml file
-            throw new Exception("Error-->"+e.getMessage());
+            throw new Exception("Error(SAXParseException)-->"+e.getMessage());
         }catch(FileNotFoundException e){ //error opening the file
-            throw new Exception("Error file not found-->"+e.getMessage());
+            throw new Exception("Error(FileNotFoundException)-->"+e.getMessage());
         }catch(Exception e){ //generic error
             e.printStackTrace();
             throw new Exception("Generic Error-->"+e.getMessage());
@@ -71,12 +71,12 @@ class PlanetCoasterMerge {
      * @param node the root node, where i start to scan
      * @throws UnsupportedEncodingException if the string format is not valid
      */
-    private void scan_current_node(Node node) throws UnsupportedEncodingException{
+    private void scan_node(Node node) throws UnsupportedEncodingException{
         System.out.println("---------------------------");
-        System.out.println("We're in the XML File");
-        NodeList child_nodes_list=node.getChildNodes(); //Entering root sons
-        int childs_count = child_nodes_list.getLength();
-        System.out.println("Childs:"+childs_count); //Counting childrens
+        System.out.println("Inside the XML File");
+        NodeList child_nodes_list=node.getChildNodes(); //Entering root childs
+        int childs_count = child_nodes_list.getLength(); //Counting childrens
+        System.out.println("Childs:"+childs_count);
         for(int i=0;i<childs_count;i++){ //For every child
             node=child_nodes_list.item(i); //I get the node
             if(node.getNodeName().equals("entry")) { //if is an entry

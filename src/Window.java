@@ -1,4 +1,5 @@
 //IMPORTS
+
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -7,11 +8,14 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
 import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.Color;
 import java.awt.Container;
+import java.awt.Font;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -37,7 +41,10 @@ public class Window extends JFrame {
     private boolean done_first_file =false, done_second_file =false;
 
     private String default_path = "C:\\Users\\"+System.getProperty("user.name")+"\\AppData\\Local\\Frontier Developments\\Planet Coaster\\Translations";
-    private String version = "1.12";
+    private String version = "1.13";
+
+    private String font = "Verdana";
+    private int fontSize = 14;
 
     /**
      * Draw the main window with buttons and labels...
@@ -49,44 +56,62 @@ public class Window extends JFrame {
         print_log("Program started!");
         print_log("Creating the Window...!");
         setSize(500,500);
-        setTitle("PlanetCoaster Translation - v" + version);
+        setTitle("PlanetCoaster Translation Manager - v" + version);
         background=this.getContentPane();
         //----------------------------------------------------------------
         JPanel total_panel=new JPanel();
-        total_panel.setLayout(new GridLayout(3,2));
+        total_panel.setLayout(new GridLayout(3,1));
         //----------------------------------------------------------------
+        try { //Set system UI
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
+            print_log("Error:" + ex);
+        }
         //old file - panel and buttons
         labelOldFile=new JLabel("<html>OLD File name <br/> (Or File to check duplicates)</html>");
+        labelOldFile.setFont(new Font(font, Font.PLAIN, fontSize));
+
         selectOldFile=new JButton("Select Old File");
+        selectOldFile.setFont(new Font(font, Font.PLAIN, fontSize));
         selectOldFile.addActionListener(new OldFilePath());
         JPanel oldL=new JPanel();
         oldL.add(labelOldFile);
         JPanel oldS=new JPanel();
         oldS.add(selectOldFile);
-        oldL.setBorder(new TitledBorder("Old XML Filename"));
-        oldS.setBorder(new TitledBorder("Old XML File Chooser"));
-        total_panel.add(oldL);
-        total_panel.add(oldS);
+
+        JPanel old_total_panel=new JPanel();
+        old_total_panel.setLayout(new GridLayout(2,1));
+        old_total_panel.add(oldL);
+        old_total_panel.add(oldS);
+        old_total_panel.setBorder(BorderFactory.createTitledBorder(null, "Old XML File", TitledBorder.CENTER, TitledBorder.TOP, new Font(font,Font.BOLD,fontSize), Color.black));
+        total_panel.add(old_total_panel);
         //----------------------------------------------------------------
         //new file - panel and buttons
         labelNewFile=new JLabel("NEW File name");
+        labelNewFile.setFont(new Font(font, Font.PLAIN, fontSize));
         selectNewFile=new JButton("Select New File");
+        selectNewFile.setFont(new Font(font, Font.PLAIN, fontSize));
         selectNewFile.addActionListener(new NewFilePath());
         JPanel newL=new JPanel();
         newL.add(labelNewFile);
         JPanel newS=new JPanel();
         newS.add(selectNewFile);
-        newL.setBorder(new TitledBorder("New XML Filename"));
-        newS.setBorder(new TitledBorder("New XML File Chooser"));
-        total_panel.add(newL);
-        total_panel.add(newS);
+
+        JPanel new_total_panel=new JPanel();
+        new_total_panel.setLayout(new GridLayout(2,1));
+        new_total_panel.add(newL);
+        new_total_panel.add(newS);
+        new_total_panel.setBorder(BorderFactory.createTitledBorder(null, "New XML File", TitledBorder.CENTER, TitledBorder.TOP, new Font(font,Font.BOLD,fontSize), Color.black));
+        total_panel.add(new_total_panel);
         //----------------------------------------------------------------
         //elaborate file - panel and buttons
         elaborate=new JButton("Process Files");
         elaborate.addActionListener(new Elaborate_Files());
+        elaborate.setFont(new Font(font, Font.PLAIN, fontSize));
 
         duplicates = new JButton("Check for Duplicates");
         duplicates.addActionListener(new Find_Duplicates());
+        duplicates.setFont(new Font(font, Font.PLAIN, fontSize));
 
         JPanel buttons_execute_panel = new JPanel();
         buttons_execute_panel.setLayout(new GridLayout(2,1));
@@ -94,14 +119,18 @@ public class Window extends JFrame {
         buttons_execute_panel.add(duplicates);
         JPanel wrapperPanel1 = new JPanel(new GridBagLayout());
         wrapperPanel1.add(buttons_execute_panel);
-        wrapperPanel1.setBorder(BorderFactory.createLineBorder(Color.black));
-        total_panel.add(wrapperPanel1);
 
         result=new JLabel("Ready");
+        result.setFont(new Font(font, Font.PLAIN, fontSize));
         JPanel state = new JPanel();
         state.add(result);
-        state.setBorder(new TitledBorder("Current State"));
-        total_panel.add(state);
+
+        JPanel result_total_panel=new JPanel();
+        result_total_panel.setLayout(new GridLayout(2,1));
+        result_total_panel.add(state);
+        result_total_panel.add(wrapperPanel1);
+        result_total_panel.setBorder(BorderFactory.createTitledBorder(null, "Execution and current state", TitledBorder.CENTER, TitledBorder.TOP, new Font(font,Font.BOLD,fontSize), Color.black));
+        total_panel.add(result_total_panel);
         //----------------------------------------------------------------
         background.add(total_panel);
         print_log("Window Fully Created!");
@@ -112,12 +141,11 @@ public class Window extends JFrame {
             setIconImage(ImageIO.read(new File("planet_icon.png")));
         }
         catch (IOException exc) {
-            print_log("Icon \"planet_icon.png\" not found in execution dir...");
+            print_log("Icon \"planet_icon.png\" not found in execution dir... Skipping");
             exc.printStackTrace();
         }
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setVisible(true);
-
     }
 
     //---------------------------------------------------------------------------------------
@@ -136,7 +164,7 @@ public class Window extends JFrame {
                 fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
                 fileChooser.setMultiSelectionEnabled(false); //can select only a file
                 //Try to open the frontier directory
-                print_log(default_path);
+                print_log("Trying to open the default path: "+default_path);
                 fileChooser.setCurrentDirectory(new File(default_path));
                 int result = fileChooser.showOpenDialog(labelOldFile);
                 //check if the result is the "approve" button
@@ -167,7 +195,7 @@ public class Window extends JFrame {
                 fileChooser.setFileFilter(f1);
                 fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
                 fileChooser.setMultiSelectionEnabled(false);
-                print_log(default_path);
+                print_log("Trying to open the default path: "+default_path);
                 fileChooser.setCurrentDirectory(new File(default_path));
                 int result = fileChooser.showOpenDialog(labelNewFile);
                 if (result == JFileChooser.APPROVE_OPTION) { //if the user choose a file
@@ -193,6 +221,22 @@ public class Window extends JFrame {
         selectNewFile.setEnabled(active);
         duplicates.setEnabled(active);
     }//toggle_buttons
+
+    //---------------------------------------------------------------------------------------
+
+    /**
+     * Function that display an error box, called when an error occurs
+     * @param errorMessage the error message to display in the box
+     */
+    private void displayError(String errorMessage){
+        result.setText("<html><i>An error occurred</i></html>");
+        JLabel error_label = new JLabel(errorMessage);
+        error_label.setFont(new Font(font, Font.BOLD, fontSize+2));
+        JOptionPane.showMessageDialog(new JFrame(),
+                error_label,
+                "An error occurred",
+                JOptionPane.ERROR_MESSAGE);
+    }
     //---------------------------------------------------------------------------------------
     /**Listener that merge the 2 files with a thread
      * (using PlanetCoasterWriter class)
@@ -227,12 +271,12 @@ public class Window extends JFrame {
                     result.setText("Done!");
                 }catch(Exception err){
                     print_log("Error:"+err);
-                    result.setText("<html>ERROR!<br/>\n"+err+"</html>");
+                    displayError(err.toString());
                 }
                 toggleButtons(true);
             }catch (Exception err){ //something happened
                 print_log("Error:"+err);
-                result.setText("<html>ERROR!<br/>\n"+err+"</html>");
+                displayError(err.toString());
                 toggleButtons(true);
             }
         }//run_thread
@@ -273,7 +317,7 @@ public class Window extends JFrame {
                     errors=true;
                     fileSelected = null;
                     print_log("Error:"+err);
-                    result.setText("<html>ERROR!<br/>"+err+"</html>");
+                    displayError(err.toString());
                 }
                 if(fileSelected != null) {
                     ArrayList<String> duplicatesKeys = new ArrayList<String>();
@@ -318,7 +362,7 @@ public class Window extends JFrame {
                     if(!errors) {
                         errors = true;
                         print_log("Error - File merge was null? Check log");
-                        result.setText("Error - File merge was null? Check log");
+                        displayError("Error - File merge was null? Check log");
                     }
                 }
                 print_log("Duplicates search ended");
@@ -331,7 +375,7 @@ public class Window extends JFrame {
                 System.out.println("---------------------------");
             }catch (Exception err){ //something happened
                 print_log("Error:"+err);
-                result.setText("ERROR!<br/>\n"+err);
+                displayError(err.toString());
                 toggleButtons(true);
             }
         }//run_thread
