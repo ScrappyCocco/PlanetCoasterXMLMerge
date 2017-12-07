@@ -40,8 +40,9 @@ public class Window extends JFrame {
     private String path_old_file, path_new_file;
     private boolean done_first_file =false, done_second_file =false;
 
+    //default windows translation location
     private String default_path = "C:\\Users\\"+System.getProperty("user.name")+"\\AppData\\Local\\Frontier Developments\\Planet Coaster\\Translations";
-    private String version = "1.13";
+    private String version = "1.14";
 
     private String font = "Verdana";
     private int fontSize = 14;
@@ -106,11 +107,11 @@ public class Window extends JFrame {
         //----------------------------------------------------------------
         //elaborate file - panel and buttons
         elaborate=new JButton("Process Files");
-        elaborate.addActionListener(new Elaborate_Files());
+        elaborate.addActionListener(new Elaborate_Files(this));
         elaborate.setFont(new Font(font, Font.PLAIN, fontSize));
 
         duplicates = new JButton("Check for Duplicates");
-        duplicates.addActionListener(new Find_Duplicates());
+        duplicates.addActionListener(new Find_Duplicates(this));
         duplicates.setFont(new Font(font, Font.PLAIN, fontSize));
 
         JPanel buttons_execute_panel = new JPanel();
@@ -243,10 +244,14 @@ public class Window extends JFrame {
      * */
 
     class Elaborate_Files implements ActionListener, Runnable{
+        Window window_reference; //reference to main window to use print_log()
+        Elaborate_Files(Window ref){
+            window_reference = ref;
+        }
         //Function called when the elaborate button is pressed
         public void actionPerformed(ActionEvent e) {
             if(done_first_file && done_second_file) { //only if both are true
-                Thread t = new Thread(new Elaborate_Files()); //i can create the new file
+                Thread t = new Thread(new Elaborate_Files(window_reference)); //i can create the new file
                 t.start(); //starting the process thread
             }else{ //need to select files first
                 result.setText("Select Files First!");
@@ -263,7 +268,7 @@ public class Window extends JFrame {
             result.setText("Working...");
             try{
                 try {
-                    PlanetCoasterWriter w = new PlanetCoasterWriter(path_old_file, path_new_file);
+                    PlanetCoasterWriter w = new PlanetCoasterWriter(path_old_file, path_new_file, window_reference);
                     while (!w.has_finished) { //wait for process to finish
                         Thread.sleep(30); //wait 30 milliseconds
                     }
@@ -283,14 +288,18 @@ public class Window extends JFrame {
     }//Elaborate_Class
     //---------------------------------------------------------------------------------------
     /**Listener that open a file, and check for keys duplicates, saving them in a TXT file
-     * (using PlanetCoasterMerge class)
+     * (using PlanetCoasterReader class)
      * */
 
     class Find_Duplicates implements ActionListener, Runnable{
+        Window window_reference; //reference to main window to use print_log()
+        Find_Duplicates(Window ref){
+            window_reference = ref;
+        }
         //Function called when the duplicates button is pressed
         public void actionPerformed(ActionEvent e) {
             if(done_first_file) { //only if both are true
-                Thread t = new Thread(new Find_Duplicates()); //i can create the new file
+                Thread t = new Thread(new Find_Duplicates(window_reference)); //i can create the new file
                 t.start(); //starting the process thread
             }else{ //need to select files first
                 result.setText("Select the File to find Duplicates!");
@@ -303,76 +312,21 @@ public class Window extends JFrame {
          * The thread wait until the file creation has ended
          */
         public void run() {
-            boolean errors = false;
             toggleButtons(false);
             result.setText("Working...");
             try{
-                PlanetCoasterMerge fileSelected = null;
                 try {
-                    if (done_first_file) {
-                        //true for checking comments
-                        fileSelected = new PlanetCoasterMerge(path_old_file, true);
+                    PlanetCoasterDuplicates w = new PlanetCoasterDuplicates(path_old_file, window_reference);
+                    while (!w.has_finished) { //wait for process to finish
+                        Thread.sleep(30); //wait 30 milliseconds
                     }
-                }catch(Exception err){ //Probably the xml file is not valid
-                    errors=true;
-                    fileSelected = null;
+                    //process ended
+                    result.setText("Done!");
+                }catch(Exception err){
                     print_log("Error:"+err);
                     displayError(err.toString());
                 }
-                if(fileSelected != null) {
-                    ArrayList<String> duplicatesKeys = new ArrayList<String>();
-                    //For searching for duplicates
-                    for (int i = 0; i < fileSelected.Keys.size(); i++) {
-                        String compare_string = fileSelected.Keys.get(i);
-                        if(compare_string.equals("Comment")){ //The string is a comment. i have to get it
-                            compare_string = new String(fileSelected.utf8_values.get(i), "UTF-8");
-                        }
-                        for (int k = 0; k < fileSelected.Keys.size(); k++) {
-                            //removed_values.add(new String(oldUTFTrans.get(0), "UTF-8"));
-                            if(fileSelected.Keys.get(k).equals("Comment") && i != k){ //The string is a comment. i have to get it
-                                //Getting the comment and comparing it
-                                String comment_value = new String(fileSelected.utf8_values.get(k), "UTF-8");
-                                if(comment_value.equals(compare_string) && !duplicatesKeys.contains(compare_string)){ //If the two comments are the same and the comment is not in the array
-                                    duplicatesKeys.add(compare_string);
-                                }
-                            }else {
-                                //If the index is different AND the two keys are the same AND is not already in the final array
-                                if (i != k && compare_string.equals(fileSelected.Keys.get(k)) && !duplicatesKeys.contains(compare_string)) {
-                                    duplicatesKeys.add(compare_string);
-                                }
-                            }
-                        }//inside-for
-                    }//big for
-                    print_log("Found " + duplicatesKeys.size() + " duplicates!");
-                    try{ //print all the lost strings
-                        if(duplicatesKeys.size()>0) {
-                            PrintWriter writer = new PrintWriter("DuplicatesFound.txt", "UTF-8");
-                            for (String duplicatesKey : duplicatesKeys) {
-                                writer.println("\"" + duplicatesKey + "\""); //print string to file
-                            }
-                            writer.close();
-                        }else{
-                            print_log("\nSkipped creation of DuplicatesFound.txt, no string removed...");
-                        }
-                    } catch (Exception e) {
-                        errors=true;
-                        print_log("\nError creating the file:"+e.toString());
-                    }
-                }else {//if not null
-                    if(!errors) {
-                        errors = true;
-                        print_log("Error - File merge was null? Check log");
-                        displayError("Error - File merge was null? Check log");
-                    }
-                }
-                print_log("Duplicates search ended");
-                //process ended
-                if(!errors)
-                {
-                    result.setText("Done!");
-                }
                 toggleButtons(true);
-                System.out.println("---------------------------");
             }catch (Exception err){ //something happened
                 print_log("Error:"+err);
                 displayError(err.toString());
@@ -383,13 +337,17 @@ public class Window extends JFrame {
     //---------------------------------------------------------------------------------------
     /**Function to pretty print the log with time
      @param s String to print*/
-    private void print_log(String s){
+    protected void print_log(String s){
         Date date = new Date();
         SimpleDateFormat ft = new SimpleDateFormat ("hh:mm:ss");
         System.out.println(ft.format(date)+"-->"+s);
     }//Stampa
     //---------------------------------------------------------------------------------------
 
+    /**
+     * Main execution of the program
+     * @param args main args
+     */
     public static void main(String[] args){
         new Window();
     }

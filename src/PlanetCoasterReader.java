@@ -21,18 +21,23 @@ import java.util.ArrayList;
  * The Keys array is made of Strings because the translations Keys are simple strings
  * The translated phrase is stored into a byte[] because i can store it in UTF-8
  * */
-class PlanetCoasterMerge {
+class PlanetCoasterReader {
+    //----------------------------------------------------------
+    private Window window_reference;
     ArrayList<String> Keys; //The translation Keys
     ArrayList<byte[]> utf8_values; //The translation values
     private boolean isnewFile; //if is the new file i need to store comments
+    //----------------------------------------------------------
 
     /**
      * The constructor method open the file and call a method to fill the arrays
      * @param file_top_open the path with the filename to open
      * @param isfinalfile if is the final file i need to consider comments
+     * @param ref reference to main window to use print_log()
      * @throws Exception throw an invalid UTF-8 charset exception (from scan_node()) or a generic Exception if the XML file is not valid
      */
-    PlanetCoasterMerge(String file_top_open, boolean isfinalfile) throws Exception{
+    PlanetCoasterReader(String file_top_open, boolean isfinalfile, Window ref) throws Exception{
+        window_reference = ref;
         Element root; //The root element of the xml file
         Document document_file;
         isnewFile=isfinalfile; //if is the new file i need to store comments
@@ -69,34 +74,39 @@ class PlanetCoasterMerge {
      * This method scan all the nodes under the root
      * Scanning all the nodes this method fill the two arrays with all the values
      * @param node the root node, where i start to scan
-     * @throws UnsupportedEncodingException if the string format is not valid
+     * @throws Exception if the string format is not valid
      */
-    private void scan_node(Node node) throws UnsupportedEncodingException{
-        System.out.println("---------------------------");
-        System.out.println("Inside the XML File");
+    private void scan_node(Node node) throws Exception{
+        window_reference.print_log("---------------------------");
+        window_reference.print_log("Inside the XML File");
         NodeList child_nodes_list=node.getChildNodes(); //Entering root childs
         int childs_count = child_nodes_list.getLength(); //Counting childrens
-        System.out.println("Childs:"+childs_count);
-        for(int i=0;i<childs_count;i++){ //For every child
-            node=child_nodes_list.item(i); //I get the node
-            if(node.getNodeName().equals("entry")) { //if is an entry
-                NamedNodeMap node_att = node.getAttributes(); //Checking tag attrs
-                if (node_att.getLength() > 0) { //The entry has attrs, save them
-                    Keys.add(((Attr) node_att.item(0)).getValue());
-                    utf8_values.add(((Attr) node_att.item(1)).getValue().getBytes(Charset.forName("UTF-8")));
-                }
-            }else{ //if is a comment
-                if(isnewFile) { //store comments only if is the new file
-                    if (node.getNodeType() == Element.COMMENT_NODE) {
-                        Comment comment = (Comment) node;
-                        Keys.add("Comment");
-                        utf8_values.add(comment.getData().getBytes(Charset.forName("UTF-8")));
+        window_reference.print_log("Childs:"+childs_count);
+        try {
+            for (int i = 0; i < childs_count; i++) { //For every child
+                node = child_nodes_list.item(i); //I get the node
+                if (node.getNodeName().equals("entry")) { //if is an entry
+                    NamedNodeMap node_att = node.getAttributes(); //Checking tag attrs
+                    if (node_att.getLength() > 0) { //The entry has attrs, save them
+                        Keys.add(((Attr) node_att.item(0)).getValue());
+                        utf8_values.add(((Attr) node_att.item(1)).getValue().getBytes(Charset.forName("UTF-8")));
                     }
-                }//is_new_file
-            }//else_is_a_comment
-        }//for_end
-        System.out.println("Arrays Created!");
-        System.out.println("---------------------------");
+                } else { //if is a comment
+                    if (isnewFile) { //store comments only if is the new file
+                        if (node.getNodeType() == Element.COMMENT_NODE) {
+                            Comment comment = (Comment) node;
+                            Keys.add("Comment");
+                            utf8_values.add(comment.getData().getBytes(Charset.forName("UTF-8")));
+                        }
+                    }//is_new_file
+                }//else_is_a_comment
+            }//for_en
+        }catch (Exception e){
+            window_reference.print_log("An error occurred during the scan of the xml file!");
+            throw new Exception("Scan node error-->"+e.getMessage());
+        }
+        window_reference.print_log("Arrays Created!");
+        window_reference.print_log("---------------------------");
     }
     //----------------------------------------------------------
 }//end_class

@@ -1,5 +1,4 @@
 //IMPORTS
-import com.sun.jna.platform.win32.OaIdl;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Comment;
 import org.w3c.dom.DOMImplementation;
@@ -28,33 +27,35 @@ import javax.xml.transform.stream.StreamSource;
 
 //CLASS
 /**
- * This class call the Merge for the 2 files and merge them into a single array, then write it into the final file
+ * This class call the Reader for the 2 files and merge them into a single array, then write it into the final file
  * */
 class PlanetCoasterWriter {
+    //----------------------------------------------------------
     //Copy array to fast access
     private ArrayList<String> oldKeys, newKeys;
     private ArrayList<byte[]> oldUTFTrans, newUTFTrans;
-
     boolean has_finished = false; //for the thread, to check the end of the execution
-    //----------------------------------------------------------
-    private Document xml_document;
+    private Window window_reference;
     //----------------------------------------------------------
 
     /**
-     * The constructor create the PlanetCoasterMerge for the two files and the merge them
+     * The constructor create the PlanetCoasterReader for the two files and the merge them
      * @param oldPath the old xml file path
      * @param newPath the new xml file path
+     * @param ref reference to main window to use print_log()
      * @throws Exception exceptions for generic errors
      */
-    PlanetCoasterWriter(String oldPath,String newPath) throws Exception{
+    PlanetCoasterWriter(String oldPath,String newPath, Window ref) throws Exception{
+        window_reference = ref;
+        Document xml_document;
         String output_file_name = "Final.xml";
 
-        PlanetCoasterMerge oldFile, newFile;
+        PlanetCoasterReader oldFile, newFile;
         try {
-            System.out.println("First File:");//first file (old)
-            oldFile = new PlanetCoasterMerge(oldPath, false);
-            System.out.println("Second File:"); //second file (new)
-            newFile = new PlanetCoasterMerge(newPath, true);
+            window_reference.print_log("First File:");//first file (old)
+            oldFile = new PlanetCoasterReader(oldPath, false, ref);
+            window_reference.print_log("Second File:"); //second file (new)
+            newFile = new PlanetCoasterReader(newPath, true, ref);
         }catch(Exception err){
             throw new Exception(err.toString());
         }
@@ -65,29 +66,29 @@ class PlanetCoasterWriter {
         newKeys=newFile.Keys;
         newUTFTrans=newFile.utf8_values;
 
-        System.out.println("Char utf8_values:"); //Print test - 1 (check if a common key exist)
+        window_reference.print_log("Char utf8_values:"); //Print test - 1 (check if a common key exist)
         if(newKeys.indexOf("TrackElementDesc_TK_SP_Immelmann_180Left")==-1){
             throw new Exception("PLANET COASTER KEY NOT FOUND - does it exist?");
         }else {
-            System.out.println(new String(newUTFTrans.get(newKeys.indexOf("TrackElementDesc_TK_SP_Immelmann_180Left")), "UTF-8"));
+            window_reference.print_log(new String(newUTFTrans.get(newKeys.indexOf("TrackElementDesc_TK_SP_Immelmann_180Left")), "UTF-8"));
         }
         //----------------------------------------------------------
-        System.out.println("Starting array merge");
+        window_reference.print_log("Starting array merge");
         try {
             merge_arrays(); //merging the two arrays
         }catch (Exception err){
             err.printStackTrace();
             throw new Exception(err.toString());
         }
-        System.out.println("End of array merge");
+        window_reference.print_log("End of array merge");
         //----------------------------------------------------------
-        System.out.println("Copy utf8_values:"); //Print test - 2
+        window_reference.print_log("Copy utf8_values:"); //Print test - 2
         if(newKeys.indexOf("BuildingPartCategory_Building_Signs")==-1){ //(check if a common key exist)
             throw new Exception("PLANET COASTER KEY NOT FOUND - does it exist?");
         }else {
-            System.out.println(new String(newUTFTrans.get(newKeys.indexOf("BuildingPartCategory_Building_Signs")), "UTF-8"));
+            window_reference.print_log(new String(newUTFTrans.get(newKeys.indexOf("BuildingPartCategory_Building_Signs")), "UTF-8"));
         }
-        System.out.println("---------------------------");
+        window_reference.print_log("---------------------------");
         //----------------------------------------------------------
         //start creating the new xml
         DocumentBuilderFactory dbf=DocumentBuilderFactory.newInstance();
@@ -123,9 +124,9 @@ class PlanetCoasterWriter {
                 translation.appendChild(entry);
             }
         }
-        System.out.println("Comments:"+comments_counter);
+        window_reference.print_log("Comments:"+comments_counter);
         root_element.appendChild(translation);
-        System.out.println("---------------------------");
+        window_reference.print_log("---------------------------");
         //----------------------------------------------------------
         //write the xml to a file
         DOMImplementation impl= xml_document.getImplementation();
@@ -134,7 +135,7 @@ class PlanetCoasterWriter {
         String output=ser.writeToString(xml_document);
         output=output.replace("UTF-16","utf-8"); //UTF-8
         output=prettyFormat(output,2); //format the xml file
-        System.out.println("Saving the file..." );
+        window_reference.print_log("Saving the file..." );
         try{
             //write the file using utf-8
             Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(output_file_name), "UTF-8"));
@@ -144,7 +145,7 @@ class PlanetCoasterWriter {
             e.printStackTrace();
             throw new Exception("Error (IOException) --> " + e.getMessage());
         }
-        System.out.println("File Saved!\nExecution Ended!" );
+        window_reference.print_log("File Saved!\nExecution Ended!" );
         has_finished = true;
     }//Constructor
 
@@ -153,7 +154,7 @@ class PlanetCoasterWriter {
     /**
      * This function format the xml file
      * @param input the input xml to format
-     * @param indent the indentations for formatting the code
+     * @param indent the indentations for formatting the code (always 2 in this program)
      * @return the new xml code formatted
      */
     private String prettyFormat(String input, int indent) {
@@ -179,7 +180,7 @@ class PlanetCoasterWriter {
      * leaving the translated sentences and adding the sentences from the new file
      */
     private void merge_arrays() throws Exception{
-        System.out.println("---------------------------");
+        window_reference.print_log("---------------------------");
         ArrayList<String> remKeys=new ArrayList<String>();
         ArrayList<String> removed_values=new ArrayList<String>();
         int start_size=oldKeys.size();
@@ -199,7 +200,7 @@ class PlanetCoasterWriter {
                 try { //saving the key as removed
                     removed_values.add(new String(oldUTFTrans.get(0), "UTF-8"));
                 }catch (java.io.UnsupportedEncodingException e){
-                    System.out.print("FATAL ERROR - UnsupportedEncodingException");
+                    window_reference.print_log("FATAL ERROR - UnsupportedEncodingException");
                     throw new Exception("Error (UnsupportedEncodingException) --> " + e.getMessage());
                 }
                 //removing the key
@@ -208,29 +209,29 @@ class PlanetCoasterWriter {
                 oldKeys.remove(0);
             }
         }//while
-        System.out.println("Start Size:"+start_size+" Found:"+values_found+" Removed:"+values_removed);
-        System.out.println("Final Size OldArray:"+oldKeys.size());
-        System.out.print("Creating string loss file...");
+        window_reference.print_log("Start Size:"+start_size+" Found:"+values_found+" Removed:"+values_removed);
+        window_reference.print_log("Final Size OldArray:"+oldKeys.size());
+        window_reference.print_log("Creating string loss file...");
         try{ //print all the lost strings
             if(values_removed>0) {
                 PrintWriter writer = new PrintWriter("StringLoss.txt", "UTF-8");
                 if ((removed_values.size() != values_removed) || (remKeys.size() != values_removed)) {
-                    System.out.println("\n(Something's strange)\n");
+                    window_reference.print_log("\n(Something's strange)\n");
                 }
                 for (int i = 0; i < removed_values.size(); i++) {
                     writer.println("Key: \"" + remKeys.get(i) + "\" - Value: \"" + removed_values.get(i) + "\"");
                 }
                 writer.close();
             }else{
-                System.out.println("\nSkipped creation of StringLoss.txt, no string removed...");
+                window_reference.print_log("\nSkipped creation of StringLoss.txt, no string removed...");
             }
         } catch (Exception e) {
-            System.out.println("\nError creating the file:"+e.toString());
+            window_reference.print_log("\nError creating the file:"+e.toString());
             e.printStackTrace();
             throw new Exception("Error --> " + e.getMessage());
         }
-        System.out.println("Merge Done!");
-        System.out.println("---------------------------");
+        window_reference.print_log("Merge Done!");
+        window_reference.print_log("---------------------------");
     }
     //----------------------------------------------------------
 
