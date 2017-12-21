@@ -41,7 +41,7 @@ public class Window extends JFrame {
 
     //default windows translation location
     private String default_path = "C:\\Users\\" + System.getProperty("user.name") + "\\AppData\\Local\\Frontier Developments\\Planet Coaster\\Translations";
-    private String version = "1.14.5";
+    private final String version = "1.14.5";
 
     private String font = "Verdana";
     private int fontSize = 14;
@@ -73,7 +73,7 @@ public class Window extends JFrame {
 
         selectOldFile = new JButton("Select Old File");
         selectOldFile.setFont(new Font(font, Font.PLAIN, fontSize));
-        selectOldFile.addActionListener(new OldFilePath());
+        selectOldFile.addActionListener(new XMLFilePath(true));
         JPanel oldL = new JPanel();
         oldL.add(labelOldFile);
         JPanel oldS = new JPanel();
@@ -91,7 +91,7 @@ public class Window extends JFrame {
         labelNewFile.setFont(new Font(font, Font.PLAIN, fontSize));
         selectNewFile = new JButton("Select New File");
         selectNewFile.setFont(new Font(font, Font.PLAIN, fontSize));
-        selectNewFile.addActionListener(new NewFilePath());
+        selectNewFile.addActionListener(new XMLFilePath(false));
         JPanel newL = new JPanel();
         newL.add(labelNewFile);
         JPanel newS = new JPanel();
@@ -150,18 +150,27 @@ public class Window extends JFrame {
     //---------------------------------------------------------------------------------------
 
     /**
-     * Listener for OLD file button chooser
+     * Listener for choose the XML file
      */
-    class OldFilePath implements ActionListener {
+    class XMLFilePath implements ActionListener {
+        boolean isFirstFile;
+        XMLFilePath(boolean isFirst){
+            isFirstFile = isFirst;
+        }
         /**
-         * This listener open the file-chooser window to choose the old file to analyze
+         * This listener open the file-chooser window to choose the file to analyze
          *
          * @param e the button that called the action
          */
         public void actionPerformed(ActionEvent e) {
             try {
                 JFileChooser fileChooser = new JFileChooser(); //create the file chooser
-                javax.swing.filechooser.FileFilter f1 = new FileNameExtensionFilter("OLD Xml File", "xml");
+                javax.swing.filechooser.FileFilter f1;
+                if(isFirstFile) {
+                    f1 = new FileNameExtensionFilter("OLD Xml File (.xml)", "xml");
+                }else{
+                    f1 = new FileNameExtensionFilter("NEW Xml File (.xml)", "xml");
+                }
                 fileChooser.addChoosableFileFilter(f1); //add the file filter
                 fileChooser.setFileFilter(f1); //set the current filter
                 fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -174,49 +183,21 @@ public class Window extends JFrame {
                 if (result == JFileChooser.APPROVE_OPTION) { //if the user choose a file
                     File selectedFile = fileChooser.getSelectedFile(); //Take that file
                     print_log("Selected file: " + selectedFile.getAbsolutePath());
-                    labelOldFile.setText(selectedFile.getName());
-                    path_old_file = selectedFile.getAbsolutePath();
-                    done_first_file = true;
+                    if(isFirstFile) {
+                        labelOldFile.setText(selectedFile.getName());
+                        path_old_file = selectedFile.getAbsolutePath();
+                        done_first_file = true;
+                    }else{
+                        labelNewFile.setText(selectedFile.getName());
+                        path_new_file = selectedFile.getAbsolutePath();
+                        done_second_file = true;
+                    }
                 }
             } catch (Exception a) {
                 JOptionPane.showMessageDialog(null, "Error opening the file", "ERROR!", JOptionPane.ERROR_MESSAGE);
             }
         }//button_pressed
-    }//OldFilePath_class_end
-    //---------------------------------------------------------------------------------------
-
-    /**
-     * Listener for NEW file button chooser
-     */
-    class NewFilePath implements ActionListener {
-        /**
-         * This listener open the file-chooser window to choose the new file to analyze
-         *
-         * @param e the button that called the action
-         */
-        public void actionPerformed(ActionEvent e) {
-            try {
-                JFileChooser fileChooser = new JFileChooser();
-                javax.swing.filechooser.FileFilter f1 = new FileNameExtensionFilter("NEW Xml File", "xml"); //filters
-                fileChooser.addChoosableFileFilter(f1);
-                fileChooser.setFileFilter(f1);
-                fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-                fileChooser.setMultiSelectionEnabled(false);
-                print_log("Trying to open the default path: " + default_path);
-                fileChooser.setCurrentDirectory(new File(default_path));
-                int result = fileChooser.showOpenDialog(labelNewFile);
-                if (result == JFileChooser.APPROVE_OPTION) { //if the user choose a file
-                    File selectedFile = fileChooser.getSelectedFile(); //Take that file
-                    print_log("Selected file: " + selectedFile.getAbsolutePath());
-                    labelNewFile.setText(selectedFile.getName());
-                    path_new_file = selectedFile.getAbsolutePath();
-                    done_second_file = true;
-                }
-            } catch (Exception a) {
-                JOptionPane.showMessageDialog(null, "Error opening the file", "ERROR!", JOptionPane.ERROR_MESSAGE);
-            }
-        }//button_pressed
-    }//NewFilePath_class_end
+    }//XMLFilePath_class_end
     //---------------------------------------------------------------------------------------
 
     /**

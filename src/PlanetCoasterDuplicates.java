@@ -10,7 +10,7 @@ import java.util.ArrayList;
  */
 public class PlanetCoasterDuplicates {
     //----------------------------------------------------------
-    boolean has_finished = false; //for the thread, to check the end of the execution
+    boolean has_finished; //for the thread, to check the end of the execution (default = false)
     private Window window_reference; //reference to main window to use print_log()
     private ArrayList<String> duplicatesKeys; //array that store the duplicates found
     //----------------------------------------------------------
@@ -25,13 +25,8 @@ public class PlanetCoasterDuplicates {
     PlanetCoasterDuplicates(String filePath, Window ref) throws Exception {
         window_reference = ref;
         PlanetCoasterReader fileSelected = null;
-        try {
-            //true for checking comments
-            fileSelected = new PlanetCoasterReader(filePath, true, window_reference);
-        } catch (Exception err) { //Probably the xml file is not valid
-            err.printStackTrace();
-            throw err;
-        }
+        //true for checking comments
+        fileSelected = new PlanetCoasterReader(filePath, true, window_reference);
         //----------------------------------------------------------
         //scan for duplicates
         analyze_duplicates(fileSelected);

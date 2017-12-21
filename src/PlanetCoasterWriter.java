@@ -39,7 +39,7 @@ class PlanetCoasterWriter {
     //Copy array to fast access
     private ArrayList<String> oldKeys, newKeys; //old file arrays
     private ArrayList<byte[]> oldUTFTrans, newUTFTrans; //new file arrays
-    boolean has_finished = false; //for the thread, to check the end of the execution
+    boolean has_finished; //for the thread, to check the end of the execution (default = false)
     private Window window_reference; //reference to main window to use print_log()
     //----------------------------------------------------------
 
@@ -58,14 +58,10 @@ class PlanetCoasterWriter {
         //----------------------------------------------------------
         //reading the two files
         PlanetCoasterReader oldFile, newFile;
-        try {
-            window_reference.print_log("First File:");//first file (old)
-            oldFile = new PlanetCoasterReader(oldPath, false, ref);
-            window_reference.print_log("Second File:"); //second file (new)
-            newFile = new PlanetCoasterReader(newPath, true, ref);
-        } catch (Exception err) {
-            throw new Exception(err.toString());
-        }
+        window_reference.print_log("First File:");//first file (old)
+        oldFile = new PlanetCoasterReader(oldPath, false, ref);
+        window_reference.print_log("Second File:"); //second file (new)
+        newFile = new PlanetCoasterReader(newPath, true, ref);
         //----------------------------------------------------------
         //Setting array references to keys and values
         oldKeys = oldFile.Keys;
@@ -84,12 +80,7 @@ class PlanetCoasterWriter {
         //----------------------------------------------------------
         //merging the two arrays
         window_reference.print_log("Starting array merge");
-        try {
-            merge_arrays();
-        } catch (Exception err) {
-            err.printStackTrace();
-            throw new Exception(err.toString());
-        }
+        merge_arrays();
         window_reference.print_log("End of array merge");
         //----------------------------------------------------------
         //Print test - 2
@@ -175,15 +166,10 @@ class PlanetCoasterWriter {
         output = output.replace("UTF-16", "utf-8"); //UTF-8
         output = prettyFormat(output, 2); //format the xml file
         window_reference.print_log("Saving the file...");
-        try {
-            //write the file using utf-8
-            Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(output_file_name), "UTF-8"));
-            out.write(output);
-            out.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new Exception("Error (IOException) --> " + e.getMessage());
-        }
+        //write the file using utf-8
+        Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(output_file_name), "UTF-8"));
+        out.write(output);
+        out.close();
         window_reference.print_log("File Saved!");
     }
 
@@ -253,7 +239,7 @@ class PlanetCoasterWriter {
             if (values_removed > 0) {
                 PrintWriter writer = new PrintWriter("StringLoss.txt", "UTF-8");
                 if ((removed_values.size() != values_removed) || (remKeys.size() != values_removed)) {
-                    window_reference.print_log("\n(Something's strange)\n");
+                    window_reference.print_log("\n(Something's strange happened (removed_values container)\n");
                 }
                 for (int i = 0; i < removed_values.size(); i++) {
                     writer.println("Key: \"" + remKeys.get(i) + "\" - Value: \"" + removed_values.get(i) + "\"");
@@ -264,7 +250,6 @@ class PlanetCoasterWriter {
             }
         } catch (Exception e) {
             window_reference.print_log("\nError creating the file:" + e.toString());
-            e.printStackTrace();
             throw new Exception("Error --> " + e.getMessage());
         }
         window_reference.print_log("Merge Done!");

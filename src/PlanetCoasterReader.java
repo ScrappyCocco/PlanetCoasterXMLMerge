@@ -64,12 +64,14 @@ class PlanetCoasterReader {
                 }
             }
             scan_node(start_node); //starting from the root
+            if (Keys.size() != utf8_values.size()) {
+                throw new Exception("The two containers have different size, this should not happen!");
+            }
         } catch (SAXParseException e) { //error reading the xml file
             throw new Exception("Error(SAXParseException)-->" + e.getMessage());
         } catch (FileNotFoundException e) { //error opening the file
             throw new Exception("Error(FileNotFoundException)-->" + e.getMessage());
         } catch (Exception e) { //generic error
-            e.printStackTrace();
             throw new Exception("Generic Error-->" + e.getMessage());
         }
     }//Constructor
