@@ -33,27 +33,27 @@ import java.util.Date;
  */
 public class Window extends JFrame {
 
-    private JLabel labelOldFile, labelNewFile, result;
-    private JButton elaborate, selectOldFile, selectNewFile, duplicates;
+    private final JLabel labelOldFile, labelNewFile, result;
+    private final JButton elaborate, selectOldFile, selectNewFile, duplicates;
 
     private String path_old_file, path_new_file;
     private boolean done_first_file = false, done_second_file = false;
 
     //default windows translation location
-    private String default_path = "C:\\Users\\" + System.getProperty("user.name") + "\\AppData\\Local\\Frontier Developments\\Planet Coaster\\Translations";
-    private final String version = "1.14.5";
+    private final String default_path = "C:\\Users\\" + System.getProperty("user.name") + "\\AppData\\Local\\Frontier Developments\\Planet Coaster\\Translations";
+    private final String version = "1.15";
 
-    private String font = "Verdana";
-    private int fontSize = 14;
+    private final String font = "Verdana";
+    private final int fontSize = 14;
 
     /**
      * Draw the main window with buttons and labels...
-     * (this is not an important part of the program)
+     * (this constructor is not an important part of the program, it just create the UI)
      */
     private Window() {
         Container background;
 
-        print_log("Program started!");
+        print_log("Executing Window()");
         print_log("Creating the Window...!");
         setSize(500, 500);
         setTitle("PlanetCoaster Translation Manager - v" + version);
@@ -154,9 +154,11 @@ public class Window extends JFrame {
      */
     class XMLFilePath implements ActionListener {
         boolean isFirstFile;
-        XMLFilePath(boolean isFirst){
+
+        XMLFilePath(boolean isFirst) {
             isFirstFile = isFirst;
         }
+
         /**
          * This listener open the file-chooser window to choose the file to analyze
          *
@@ -166,9 +168,9 @@ public class Window extends JFrame {
             try {
                 JFileChooser fileChooser = new JFileChooser(); //create the file chooser
                 javax.swing.filechooser.FileFilter f1;
-                if(isFirstFile) {
+                if (isFirstFile) {
                     f1 = new FileNameExtensionFilter("OLD Xml File (.xml)", "xml");
-                }else{
+                } else {
                     f1 = new FileNameExtensionFilter("NEW Xml File (.xml)", "xml");
                 }
                 fileChooser.addChoosableFileFilter(f1); //add the file filter
@@ -183,11 +185,11 @@ public class Window extends JFrame {
                 if (result == JFileChooser.APPROVE_OPTION) { //if the user choose a file
                     File selectedFile = fileChooser.getSelectedFile(); //Take that file
                     print_log("Selected file: " + selectedFile.getAbsolutePath());
-                    if(isFirstFile) {
+                    if (isFirstFile) {
                         labelOldFile.setText(selectedFile.getName());
                         path_old_file = selectedFile.getAbsolutePath();
                         done_first_file = true;
-                    }else{
+                    } else {
                         labelNewFile.setText(selectedFile.getName());
                         path_new_file = selectedFile.getAbsolutePath();
                         done_second_file = true;
@@ -352,6 +354,7 @@ public class Window extends JFrame {
      * @param args main args
      */
     public static void main(String[] args) {
+        System.out.println("---Execution started---");
         new Window();
     }
 

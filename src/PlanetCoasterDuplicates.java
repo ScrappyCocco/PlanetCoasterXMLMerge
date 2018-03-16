@@ -2,6 +2,8 @@
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 //CLASS
 
@@ -24,7 +26,7 @@ public class PlanetCoasterDuplicates {
      */
     PlanetCoasterDuplicates(String filePath, Window ref) throws Exception {
         window_reference = ref;
-        PlanetCoasterReader fileSelected = null;
+        PlanetCoasterReader fileSelected;
         //true for checking comments
         fileSelected = new PlanetCoasterReader(filePath, true, window_reference);
         //----------------------------------------------------------
@@ -48,50 +50,50 @@ public class PlanetCoasterDuplicates {
      */
     private void analyze_duplicates(PlanetCoasterReader fileSelected) throws Exception {
         duplicatesKeys = new ArrayList<String>();
-        //For searching for duplicates
-        for (int i = 0; i < fileSelected.Keys.size(); i++) {
-            String compare_string = fileSelected.Keys.get(i);
-            boolean first_compare_is_comment = false;
-            if (compare_string.equals("Comment")) { //The string is a comment. i have to get it
-                compare_string = new String(fileSelected.utf8_values.get(i), "UTF-8");
-                first_compare_is_comment = true;
+        Set<String> duplicates = new HashSet<String>();
+        String index;
+        window_reference.print_log("File keys:" + fileSelected.Keys.size());
+        for (int position = 0; position < fileSelected.Keys.size(); ++position) {
+            index = fileSelected.Keys.get(position);
+            if (index.equals("Comment")) { //The string is a comment. i have to get it
+                index = new String(fileSelected.utf8_values.get(position), "UTF-8");
+                index = "<!--" + index + "-->"; //Use the xml-comment style to separate comments and keys
             }
-            for (int k = 0; k < fileSelected.Keys.size(); k++) {
-                //removed_values.add(new String(oldUTFTrans.get(0), "UTF-8"));
-                //The string is a comment. i have to get it, i compare it ONLY if the other is a comment
-                if (fileSelected.Keys.get(k).equals("Comment") && i != k && first_compare_is_comment) {
-                    //Getting the comment and comparing it
-                    String comment_value = new String(fileSelected.utf8_values.get(k), "UTF-8");
-                    //If the two comments are the same and the comment is not in the array
-                    if (comment_value.equals(compare_string) && !duplicatesKeys.contains(compare_string)) {
-                        duplicatesKeys.add(compare_string);
-                    }
-                } else if (!first_compare_is_comment) { //if the first is not a comment
-                    //If the index is different AND the two keys are the same AND is not already in the final array
-                    if (i != k && compare_string.equals(fileSelected.Keys.get(k)) && !duplicatesKeys.contains(compare_string)) {
-                        duplicatesKeys.add(compare_string);
-                    }
-                }
-            }//inside-for
-        }//big for
+            if (duplicates.contains(index)) { //If is already in the Set
+                duplicatesKeys.add(index); //Is a duplicate
+            } else {
+                duplicates.add(index); //Put it in the Set
+            }
+        }//end_for
     }
 
+    /**
+     * Overload of print_duplicates_to_file(String...) without parameters
+     * Use default file name "DuplicatesFound.txt"
+     *
+     * @throws Exception if an error occur during print_duplicates_to_file(String...), thrown an exception
+     */
+    private void print_duplicates_to_file() throws Exception {
+        print_duplicates_to_file("DuplicatesFound.txt");
+    }
 
     /**
      * This function create the file that list all the duplicate keys that has been found
      *
      * @throws Exception if an error occur, thrown an exception
      */
-    private void print_duplicates_to_file() throws Exception {
+    private void print_duplicates_to_file(String fileName) throws Exception {
         try { //print all the lost strings
             if (duplicatesKeys.size() > 0) {
-                PrintWriter writer = new PrintWriter("DuplicatesFound.txt", "UTF-8");
+                window_reference.print_log("Creation of " + fileName + " started...");
+                PrintWriter writer = new PrintWriter(fileName, "UTF-8");
                 for (String duplicatesKey : duplicatesKeys) {
                     writer.println("\"" + duplicatesKey + "\""); //print string to file
                 }
                 writer.close();
+                window_reference.print_log("Creation of " + fileName + " successfully ended!");
             } else {
-                window_reference.print_log("Skipped creation of DuplicatesFound.txt, no duplicate keys found...");
+                window_reference.print_log("Skipped creation of " + fileName + ", no duplicate keys found...");
             }
         } catch (Exception e) {
             window_reference.print_log("Error creating the file:" + e.toString());

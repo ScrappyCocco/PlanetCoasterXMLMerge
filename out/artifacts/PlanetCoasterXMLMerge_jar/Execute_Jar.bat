@@ -1,6 +1,6 @@
 @echo off
 title Planet Coaster XML Merge
-echo Executing (Java need to be in PATH var)...
+echo Executing Bat File (Java need to be in the PATH variabile to make this work)
 java -jar PlanetCoasterXMLMerge.jar
 echo -------------------
 pause

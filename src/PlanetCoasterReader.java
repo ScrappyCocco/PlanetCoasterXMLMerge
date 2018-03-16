@@ -8,7 +8,6 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXParseException;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
@@ -88,7 +87,7 @@ class PlanetCoasterReader {
         window_reference.print_log("Inside the XML File");
         NodeList child_nodes_list = node.getChildNodes(); //Entering root childs
         int childs_count = child_nodes_list.getLength(); //Counting childrens
-        window_reference.print_log("Childs:" + childs_count);
+        window_reference.print_log("XML Childs:" + childs_count);
         try {
             for (int i = 0; i < childs_count; i++) { //For every child
                 node = child_nodes_list.item(i); //I get the node
@@ -112,7 +111,7 @@ class PlanetCoasterReader {
             window_reference.print_log("An error occurred during the scan of the xml file!");
             throw new Exception("Scan node error-->" + e.getMessage());
         }
-        window_reference.print_log("Arrays Created!");
+        window_reference.print_log("Reader Arrays Created!");
         window_reference.print_log("---------------------------");
     }
     //----------------------------------------------------------
