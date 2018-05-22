@@ -1,2 +1,3 @@
 .idea/
 *.iml
+out/artifacts/TemporaryBuildJar_jar/*

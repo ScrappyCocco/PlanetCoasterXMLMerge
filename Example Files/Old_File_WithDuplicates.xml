@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<localisation xmlns="http://www.planetcoaster.com/CommunityTranslation">
+	<translation>
+		<!--Section1-->
+		<entry key="Section1_FirstKey_Element" translation="Translation First Key - AAA"/>
+		<entry key="Section1_FirstKey_Element" translation="Translation First Key - AAA"/>
+		<entry key="Section1_SecondKey_Element" translation="Translation Second Key - BBB"/>
+		<entry key="Section1_ThirdKey_Element" translation="Translation Third Key - CCC"/>
+		<!--Section2-->
+		<entry key="Section2_FirstKey_Element" translation="Translation First Key - DDD"/>
+		<entry key="Section2_SecondKey_Element" translation="Translation Second Key - EEE"/>
+        <entry key="Section2_SecondKey_Element" translation="Translation Second Key - EEE"/>
+		<entry key="Section2_ThirdKey_Element" translation="Translation Third Key - FFF"/>
+	</translation>
+</localisation>
