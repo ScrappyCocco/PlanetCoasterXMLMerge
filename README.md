@@ -18,6 +18,8 @@ To execute this program you need Java, you can download Java [from here](https:/
 
 If you want to re-compile the program, you need the JDK, you can download it [from here](http://www.oracle.com/technetwork/java/javase/downloads/index.html).
 
+**All the code documentation of the program is available as Javadoc**, you can read it [here](https://scrappycocco.github.io/PlanetCoasterXMLMerge/).
+
 To run the program you can re-compile it and execute it with those 2 commands in your terminal from src folder:
 
 ```
@@ -27,13 +29,13 @@ java -cp "libs\guava-23.0.jar;libs\json-simple-1.1.1.jar;." PlanetCoasterXML.Win
 
 (Remember that on unix-like systems the `;` in the classpath become `:`, and path separator `\` become `/`)
 
-If you are using Windows, you need "Java" in the PATH to use it from the command prompt, see it how [clicking here](https://goo.gl/iX4ZN7)
+If you are using Windows, you need "Java" in the PATH to use it from the command prompt, see it how [clicking here](https://goo.gl/iX4ZN7).
 
-Otherwise you can download (and execute) the .jar or the .exe file [from here](out/artifacts/Final_Jar/)
+Otherwise you can download (and execute) the .jar or the .exe file [from here](out/artifacts/Final_Jar/).
 
 ### Download the program
 
-You can download the last program release [Here](https://github.com/ScrappyCocco/PlanetCoasterXMLMerge/releases)
+You can download the last program release [here](https://github.com/ScrappyCocco/PlanetCoasterXMLMerge/releases).
 
 ### Using the program
 
