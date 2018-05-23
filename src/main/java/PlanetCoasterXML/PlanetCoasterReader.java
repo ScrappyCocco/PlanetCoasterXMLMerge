@@ -20,18 +20,6 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import com.google.common.collect.LinkedListMultimap;
 
-//EXCEPTION CLASS
-
-/**
- * This is a little Exception Class that be thrown when an error occur in the Reader
- */
-class PlanetCoasterReaderException extends Exception {
-    // Constructor that accepts a message
-    PlanetCoasterReaderException(String message) {
-        super(message);
-    }
-}
-
 //CLASS
 
 /**
@@ -143,7 +131,7 @@ public class PlanetCoasterReader {
      * @return an ArrayList with all the keys in the loaded file
      */
     public ArrayList<String> extractKeys() {
-        return new ArrayList<>(loaded_file_multimap.keys());
+        return new ArrayList<String>(loaded_file_multimap.keys());
     }
 
     /**
@@ -152,10 +140,10 @@ public class PlanetCoasterReader {
      * @return an ArrayList with all the values (entries) in the loaded file
      */
     public ArrayList<byte[]> extractValues() {
-        ArrayList<byte[]> return_array = new ArrayList<>();
+        ArrayList<byte[]> return_array = new ArrayList<byte[]>();
         for (final String key : loaded_file_multimap.keys()) {
             //I want to add all the entries that has a key
-            return_array.addAll(loaded_file_multimap.get(key));
+            return_array.add(loaded_file_multimap.get(key).get(0));
         }
         return return_array;
     }
@@ -170,7 +158,7 @@ public class PlanetCoasterReader {
      * @return an ArrayList with all the comments in the loaded file
      */
     public ArrayList<byte[]> extractComments() {
-        ArrayList<byte[]> return_array = new ArrayList<>();
+        ArrayList<byte[]> return_array = new ArrayList<byte[]>();
         for (final String key : loaded_file_multimap.keys()) {
             if (key.contains("XMLPARSER-Comment")) {
                 return_array.add(loaded_file_multimap.get(key).get(0));

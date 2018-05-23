@@ -192,7 +192,7 @@ public class Window extends JFrame {
         //----------------------------------------------------------------
         //Setting program icon
         try {
-            InputStream in = this.getClass().getClassLoader().getResourceAsStream("PlanetCoasterXML/planet_icon.png");
+            InputStream in = this.getClass().getClassLoader().getResourceAsStream("planet_icon.png");
             if (in != null) {
                 BufferedImage myImg = ImageIO.read(in);
                 setIconImage(myImg);
@@ -307,7 +307,7 @@ public class Window extends JFrame {
         try {
             print_log("---Starting Json Variables init---");
             JSONParser parser = new JSONParser();
-            BufferedReader in = new BufferedReader(new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream("PlanetCoasterXML/config.json")));
+            BufferedReader in = new BufferedReader(new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream("config.json")));
             String line;
             StringBuilder sb = new StringBuilder();
             while ((line = in.readLine()) != null) {

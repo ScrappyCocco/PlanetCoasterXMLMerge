@@ -90,8 +90,8 @@ public class PlanetCoasterDuplicates {
      * @throws java.io.UnsupportedEncodingException if an error occur during the file scan
      */
     private void analyze_duplicates(PlanetCoasterReader fileSelected) throws java.io.UnsupportedEncodingException {
-        duplicatesKeys = new ArrayList<>();
-        Set<String> duplicates = new HashSet<>(); //Using an HashSet for convenience and speed
+        duplicatesKeys = new ArrayList<String>();
+        Set<String> duplicates = new HashSet<String>(); //Using an HashSet for convenience and speed
         String current_value;
         Window.print_log("File keys:" + fileSelected.loaded_file_multimap.size());
         //for each key in the selected file

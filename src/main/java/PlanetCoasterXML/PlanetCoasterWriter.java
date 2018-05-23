@@ -31,18 +31,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
-//EXCEPTION CLASS
-
-/**
- * This is a little Exception Class that be thrown when an error occurred while writing in one of the methods in this class
- */
-class PlanetCoasterWriterException extends Exception {
-    // Constructor that accepts a message
-    public PlanetCoasterWriterException(String message) {
-        super(message);
-    }
-}
-
 //CLASS
 
 /**
