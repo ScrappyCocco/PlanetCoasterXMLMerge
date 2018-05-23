@@ -6,13 +6,25 @@ import PlanetCoasterXML.PlanetCoasterReader;
 import PlanetCoasterXML.PlanetCoasterReaderException;
 import PlanetCoasterXML.PlanetCoasterWriter;
 import PlanetCoasterXML.PlanetCoasterWriterException;
+import PlanetCoasterXML.Window;
 import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.util.HashSet;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class PlanetCoasterToolTest {
+
+    public static int countLines(String filename) throws java.io.IOException {
+        BufferedReader reader = new BufferedReader(new FileReader(filename));
+        int lines = 0;
+        while (reader.readLine() != null) lines++;
+        reader.close();
+        return lines;
+    }
 
     @Test
     public void PlanetCoasterReaderTest() throws PlanetCoasterReaderException {
@@ -41,6 +53,17 @@ public class PlanetCoasterToolTest {
         assertEquals(15, reader.extractKeys().size(), "PlanetCoasterReaderTest Error 2 from New_File_WithDuplicates.xml - extractKeys size not correct!");
         assertEquals(3, reader.extractComments().size(), "PlanetCoasterReaderTest Error 3 from New_File_WithDuplicates.xml - extractComments size not correct!");
         assertEquals(15, reader.extractValues().size(), "PlanetCoasterReaderTest Error 4 from New_File_WithDuplicates.xml - extractValues size not correct!");
+
+        try {
+            new PlanetCoasterReader("Example Files/BadXMLFile.xml", false);
+        } catch (PlanetCoasterReaderException err) {
+            System.out.println("Error received for BadXMLFile:" + err);
+        }
+        try {
+            new PlanetCoasterReader("Example Files/NoARealFile.xml", false);
+        } catch (PlanetCoasterReaderException err) {
+            System.out.println("Error received for BadXMLFile:" + err);
+        }
     }
 
     @Test
@@ -50,6 +73,11 @@ public class PlanetCoasterToolTest {
 
         reader = new PlanetCoasterReader("Example Files/Old_File.xml", false);
         duplicates = new PlanetCoasterDuplicates(reader);
+        assertFalse(duplicates.file_has_duplicates(), "PlanetCoasterDuplicatesTest Error 1 from Old_File.xml - getNumberDuplicates_found boolean not correct!");
+        assertEquals(0, duplicates.getNumberDuplicates_found(), "PlanetCoasterDuplicatesTest Error 2 from Old_File.xml - getNumberDuplicates_found not correct!");
+        assertEquals(0, duplicates.getDuplicatesKeys().size(), "PlanetCoasterDuplicatesTest Error 3 from Old_File.xml - getDuplicatesKeys size not correct!");
+
+        duplicates = new PlanetCoasterDuplicates("Example Files/Old_File.xml");
         assertFalse(duplicates.file_has_duplicates(), "PlanetCoasterDuplicatesTest Error 1 from Old_File.xml - getNumberDuplicates_found boolean not correct!");
         assertEquals(0, duplicates.getNumberDuplicates_found(), "PlanetCoasterDuplicatesTest Error 2 from Old_File.xml - getNumberDuplicates_found not correct!");
         assertEquals(0, duplicates.getDuplicatesKeys().size(), "PlanetCoasterDuplicatesTest Error 3 from Old_File.xml - getDuplicatesKeys size not correct!");
@@ -90,6 +118,10 @@ public class PlanetCoasterToolTest {
         assertEquals(0, merge.getRemovedKeys().size(), "PlanetCoasterMergeTest Error 1 from Old_File.xml && New_File.xml - getRemovedKeys size not correct!");
         assertEquals(9, merge.getFinalFile().loaded_file_multimap.size(), "PlanetCoasterMergeTest Error 2 from Old_File.xml && New_File.xml - getFinalFile size not correct!");
 
+        merge = new PlanetCoasterMerge("Example Files/Old_File.xml", "Example Files/New_File.xml");
+        assertEquals(0, merge.getRemovedKeys().size(), "PlanetCoasterMergeTest Error 1 from Old_File.xml && New_File.xml - getRemovedKeys size not correct!");
+        assertEquals(12, merge.getFinalFile().loaded_file_multimap.size(), "PlanetCoasterMergeTest Error 2 from Old_File.xml && New_File.xml - getFinalFile size not correct!");
+
         reader2 = new PlanetCoasterReader("Example Files/New_File.xml", true);
         merge = new PlanetCoasterMerge(reader1, reader2);
         assertEquals(0, merge.getRemovedKeys().size(), "PlanetCoasterMergeTest Error 1 from Old_File.xml && New_File.xml - getRemovedKeys size not correct!");
@@ -110,6 +142,11 @@ public class PlanetCoasterToolTest {
         assertEquals(0, merge.getRemovedKeys().size(), "PlanetCoasterMergeTest Error 1 from Old_File.xml && cleared New_File_WithDuplicates.xml - getRemovedKeys size not correct!");
         assertEquals(12, merge.getFinalFile().loaded_file_multimap.size(), "PlanetCoasterMergeTest Error 2 from Old_File.xml && cleared New_File_WithDuplicates.xml - getFinalFile size not correct!");
 
+        reader2 = new PlanetCoasterReader("Example Files/OriginalPlanetCoasterStringData.xml", true);
+        merge = new PlanetCoasterMerge(reader1, reader2);
+        assertEquals(6, merge.getRemovedKeys().size(), "PlanetCoasterMergeTest Error 1 from Old_File.xml && cleared New_File_WithDuplicates.xml - getRemovedKeys size not correct!");
+        assertEquals(24100, merge.getFinalFile().loaded_file_multimap.size(), "PlanetCoasterMergeTest Error 2 from Old_File.xml && cleared New_File_WithDuplicates.xml - getFinalFile size not correct!");
+
     }
 
     @Test
@@ -124,5 +161,33 @@ public class PlanetCoasterToolTest {
         PlanetCoasterWriter.write_xml_file(XMLDOC, "Final.xml");
         reader1 = new PlanetCoasterReader("Final.xml", true);
         assertEquals(reader2.loaded_file_multimap.size(), reader1.loaded_file_multimap.size(), "PlanetCoasterWriteTest Error 1 - The size of the file created is not correct");
+
+        reader1 = new PlanetCoasterReader("Example Files/Old_File.xml", false);
+        reader2 = new PlanetCoasterReader("Example Files/New_File.xml", true);
+        merge = new PlanetCoasterMerge(reader1, reader2);
+        XMLDOC = PlanetCoasterWriter.generate_xml_output(merge.getFinalFile());
+        PlanetCoasterWriter.write_xml_file(XMLDOC, "Final.xml");
+        reader1 = new PlanetCoasterReader("Final.xml", true);
+        assertEquals(reader2.loaded_file_multimap.size(), reader1.loaded_file_multimap.size(), "PlanetCoasterWriteTest Error 2 - The size of the file created is not correct");
+        assertEquals(reader2.extractComments().size(), reader1.extractComments().size());
+
+        PlanetCoasterWriter.write_string_array_to_file(reader2.extractKeys(), "keys.txt");
+        assertEquals(12, countLines("keys.txt"), "Number of lines in keys.txt not correct!");
+
+        PlanetCoasterWriter.write_byte_array_to_file(reader2.extractComments(), "comments.txt");
+        assertEquals(3, countLines("comments.txt"), "Number of lines in comments.txt not correct!");
+
+        PlanetCoasterWriter.write_multimap_to_file(reader1.loaded_file_multimap, "multimap1.txt");
+        assertEquals(12, countLines("multimap1.txt"), "Number of lines in multimap1.txt not correct!");
+
+        HashSet<String> avoid = new HashSet<>();
+        avoid.add("XMLPARSER-Comment");
+        PlanetCoasterWriter.write_multimap_to_file(reader1.loaded_file_multimap, "multimap2.txt", avoid, false);
+        assertEquals(9, countLines("multimap2.txt"), "Number of lines in multimap2.txt not correct!");
+    }
+
+    @Test
+    public void WindowFastTest() {
+        new Window();
     }
 }

@@ -99,7 +99,7 @@ public class PlanetCoasterMerge {
     private void keys_check(int index) throws java.io.UnsupportedEncodingException {
         switch (index) {
             case 0:
-                Window.print_log("Char utf8_values:");
+                Window.print_log("PRE-MERGE: Char utf8_values:");
                 if (second_file.loaded_file_multimap.get("TrackElementDesc_TK_SP_Immelmann_180Left").size() == 0) {
                     Window.print_log("PRE-MERGE: PLANET COASTER KEY NOT FOUND - Is the user using PlanetCoaster XML file?");
                 } else {
@@ -107,7 +107,7 @@ public class PlanetCoasterMerge {
                 }
                 break;
             case 1:
-                Window.print_log("Char utf8_values:");
+                Window.print_log("AFTER-MERGE: Char utf8_values:");
                 if (second_file.loaded_file_multimap.get("BuildingPartCategory_Building_Signs").size() == 0) {
                     Window.print_log("AFTER-MERGE: PLANET COASTER KEY NOT FOUND - Is the user using PlanetCoaster XML file?");
                 } else {

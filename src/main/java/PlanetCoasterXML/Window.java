@@ -81,7 +81,7 @@ public class Window extends JFrame {
      * <br>
      * (this constructor is not an important part of the program, it just create the UI)
      */
-    private Window() {
+    public Window() {
         //First load variables
         loadVariablesFromJson();
         //----------------------------------------------------------------
