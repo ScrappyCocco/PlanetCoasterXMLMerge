@@ -1,4 +1,4 @@
-![planet coaster icon](./src/main/resources/planet_icon.png)  ![release info](releaseinfoimage.png) [![Build Status](https://travis-ci.org/ScrappyCocco/PlanetCoasterXMLMerge.svg?branch=master)](https://travis-ci.org/ScrappyCocco/PlanetCoasterXMLMerge)
+![planet coaster icon](./src/main/resources/planet_icon.png)  [![Build Status](https://travis-ci.org/ScrappyCocco/PlanetCoasterXMLMerge.svg?branch=master)](https://travis-ci.org/ScrappyCocco/PlanetCoasterXMLMerge)
 
 # Planet Coaster XML Merge
 A little software for Planet Coaster translators that merge the old xml translation file with the new xml. (Leaving the translated sentences).
