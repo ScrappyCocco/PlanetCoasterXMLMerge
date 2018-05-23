@@ -43,7 +43,7 @@ import org.w3c.dom.Document;
  * This class create the main window with the buttons to choose the 2 files and to create the new file;
  * This class has a listener for each button, plus some threads for the processing.
  */
-public class Window extends JFrame {
+class Window extends JFrame {
 
     /**
      * Labels used in the window to tell the user the status of the program
@@ -81,7 +81,7 @@ public class Window extends JFrame {
      * <br>
      * (this constructor is not an important part of the program, it just create the UI)
      */
-    public Window() {
+    private Window() {
         //First load variables
         loadVariablesFromJson();
         //----------------------------------------------------------------

@@ -6,7 +6,6 @@ import PlanetCoasterXML.PlanetCoasterReader;
 import PlanetCoasterXML.PlanetCoasterReaderException;
 import PlanetCoasterXML.PlanetCoasterWriter;
 import PlanetCoasterXML.PlanetCoasterWriterException;
-import PlanetCoasterXML.Window;
 import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import java.io.BufferedReader;
@@ -184,10 +183,5 @@ public class PlanetCoasterToolTest {
         avoid.add("XMLPARSER-Comment");
         PlanetCoasterWriter.write_multimap_to_file(reader1.loaded_file_multimap, "multimap2.txt", avoid, false);
         assertEquals(9, countLines("multimap2.txt"), "Number of lines in multimap2.txt not correct!");
-    }
-
-    @Test
-    public void WindowFastTest() {
-        new Window();
     }
 }
