@@ -9,7 +9,7 @@
 		<entry key="Section2_FirstKey_Element" translation="Original First Key - D"/>
 		<entry key="Section2_SecondKey_Element" translation="Original Second Key - E"/>
 		<entry key="Section2_ThirdKey_Element" translation="Original Third Key - F"/>
-        <entry key="Section1_ThirdKey_Element" translation="Original Third Key - C"/>
+		<entry key="Section1_ThirdKey_Element" translation="Original Third Key - C"/>
 		<!--Section3-->
 		<entry key="Section3_FirstKey_Element" translation="Original First Key - G"/>
 		<entry key="Section3_SecondKey_Element" translation="Original Second Key - H"/>

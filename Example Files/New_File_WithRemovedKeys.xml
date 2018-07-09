@@ -8,8 +8,8 @@
 		<!--Section2-->
 		<entry key="Section2_ThirdKey_Element" translation="Original Third Key - F"/>
 		<!--Section3-->
-        <entry key="Section3_FirstKey_Element" translation="Original First Key - G"/>
-        <entry key="Section3_SecondKey_Element" translation="Original Second Key - H"/>
-        <entry key="Section3_ThirdKey_Element" translation="Original Third Key - I"/>
+		<entry key="Section3_FirstKey_Element" translation="Original First Key - G"/>
+		<entry key="Section3_SecondKey_Element" translation="Original Second Key - H"/>
+		<entry key="Section3_ThirdKey_Element" translation="Original Third Key - I"/>
 	</translation>
 </localisation>

@@ -9,7 +9,7 @@
 		<!--Section2-->
 		<entry key="Section2_FirstKey_Element" translation="Translation First Key - DDD"/>
 		<entry key="Section2_SecondKey_Element" translation="Translation Second Key - EEE"/>
-        <entry key="Section2_SecondKey_Element" translation="Translation Second Key - EEE"/>
+		<entry key="Section2_SecondKey_Element" translation="Translation Second Key - EEE"/>
 		<entry key="Section2_ThirdKey_Element" translation="Translation Third Key - FFF"/>
 	</translation>
 </localisation>
