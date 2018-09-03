@@ -5,6 +5,7 @@ package PlanetCoasterXML;
 //IMPORTS
 
 import com.google.common.collect.LinkedListMultimap;
+import java.nio.charset.StandardCharsets;
 
 //CLASS
 
@@ -32,9 +33,8 @@ public class PlanetCoasterMerge {
      *
      * @param first_input_file  The first file (old xml file) to use in the merge
      * @param second_input_file The second file (new xml file) to use in the merge
-     * @throws java.io.UnsupportedEncodingException Exception thrown if an error occur decoding a value
      */
-    public PlanetCoasterMerge(PlanetCoasterReader first_input_file, PlanetCoasterReader second_input_file) throws java.io.UnsupportedEncodingException {
+    public PlanetCoasterMerge(PlanetCoasterReader first_input_file, PlanetCoasterReader second_input_file) {
         //Saving values for later
         first_file = first_input_file;
         second_file = second_input_file;
@@ -62,9 +62,8 @@ public class PlanetCoasterMerge {
      * @param oldFilePath The path for the first file to load, used to create a PlanetCoasterReader
      * @param newFilePath The path for the second file to load, used to create a PlanetCoasterReader
      * @throws PlanetCoasterReaderException         Exception thrown if an error occur creating the two PlanetCoasterReader for the two files
-     * @throws java.io.UnsupportedEncodingException Exception thrown if an error occur decoding a value
      */
-    public PlanetCoasterMerge(String oldFilePath, String newFilePath) throws PlanetCoasterReaderException, java.io.UnsupportedEncodingException {
+    public PlanetCoasterMerge(String oldFilePath, String newFilePath) throws PlanetCoasterReaderException{
         this(new PlanetCoasterReader(oldFilePath, false), new PlanetCoasterReader(newFilePath, true));
     }//Constructor
 
@@ -94,16 +93,15 @@ public class PlanetCoasterMerge {
      * Now it just check if the file has a PlanetCoaster XML entry, but it does not block the merge
      *
      * @param index Used to check before/after merge two different keys in the file
-     * @throws java.io.UnsupportedEncodingException Exception thrown if an error occur decoding a value
      */
-    private void keys_check(int index) throws java.io.UnsupportedEncodingException {
+    private void keys_check(int index){
         switch (index) {
             case 0:
                 Window.print_log("PRE-MERGE: Char utf8_values:");
                 if (second_file.loaded_file_multimap.get("TrackElementDesc_TK_SP_Immelmann_180Left").size() == 0) {
                     Window.print_log("PRE-MERGE: PLANET COASTER KEY NOT FOUND - Is the user using PlanetCoaster XML file?");
                 } else {
-                    Window.print_log(new String(second_file.loaded_file_multimap.get("TrackElementDesc_TK_SP_Immelmann_180Left").get(0), "UTF-8"));
+                    Window.print_log(new String(second_file.loaded_file_multimap.get("TrackElementDesc_TK_SP_Immelmann_180Left").get(0), StandardCharsets.UTF_8));
                 }
                 break;
             case 1:
@@ -111,7 +109,7 @@ public class PlanetCoasterMerge {
                 if (second_file.loaded_file_multimap.get("BuildingPartCategory_Building_Signs").size() == 0) {
                     Window.print_log("AFTER-MERGE: PLANET COASTER KEY NOT FOUND - Is the user using PlanetCoaster XML file?");
                 } else {
-                    Window.print_log(new String(second_file.loaded_file_multimap.get("BuildingPartCategory_Building_Signs").get(0), "UTF-8"));
+                    Window.print_log(new String(second_file.loaded_file_multimap.get("BuildingPartCategory_Building_Signs").get(0), StandardCharsets.UTF_8));
                 }
                 break;
         }

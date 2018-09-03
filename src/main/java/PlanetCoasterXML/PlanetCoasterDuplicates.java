@@ -5,6 +5,7 @@ package PlanetCoasterXML;
 //IMPORTS
 
 import com.google.common.collect.LinkedListMultimap;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -30,9 +31,8 @@ public class PlanetCoasterDuplicates {
      * This constructor take a PlanetCoasterReader in input, and check if there is any duplicate key
      *
      * @param file The input file to check for duplicates
-     * @throws java.io.UnsupportedEncodingException Exception thrown if an error occur decoding a value
      */
-    public PlanetCoasterDuplicates(PlanetCoasterReader file) throws java.io.UnsupportedEncodingException {
+    public PlanetCoasterDuplicates(PlanetCoasterReader file) {
         //----------------------------------------------------------
         //scan for duplicates
         analyze_duplicates(file);
@@ -50,9 +50,8 @@ public class PlanetCoasterDuplicates {
      *
      * @param filePath the path of the file to load
      * @throws PlanetCoasterReaderException         Exception thrown if an error occur creating the PlanetCoasterReader
-     * @throws java.io.UnsupportedEncodingException Exception thrown if an error occur decoding a value
      */
-    public PlanetCoasterDuplicates(String filePath) throws PlanetCoasterReaderException, java.io.UnsupportedEncodingException {
+    public PlanetCoasterDuplicates(String filePath) throws PlanetCoasterReaderException{
         this(new PlanetCoasterReader(filePath, true));
     }
 
@@ -87,9 +86,8 @@ public class PlanetCoasterDuplicates {
      * This method analyze if there are duplicates in the keys of the "fileSelected" file
      *
      * @param fileSelected the file to analyze
-     * @throws java.io.UnsupportedEncodingException if an error occur during the file scan
      */
-    private void analyze_duplicates(PlanetCoasterReader fileSelected) throws java.io.UnsupportedEncodingException {
+    private void analyze_duplicates(PlanetCoasterReader fileSelected) {
         duplicatesKeys = new ArrayList<String>();
         Set<String> duplicates = new HashSet<String>(); //Using an HashSet for convenience and speed
         String current_value;
@@ -98,7 +96,7 @@ public class PlanetCoasterDuplicates {
         for (final String xml_key : fileSelected.loaded_file_multimap.keys()) {
             current_value = xml_key;
             if (xml_key.contains("XMLPARSER-Comment")) { //The string is a comment. i have to get it
-                current_value = new String(fileSelected.loaded_file_multimap.get(xml_key).get(0), "UTF-8");
+                current_value = new String(fileSelected.loaded_file_multimap.get(xml_key).get(0), StandardCharsets.UTF_8);
                 current_value = "<!--" + current_value + "-->"; //Use the xml-comment style to separate comments and keys
             }
             if (duplicates.contains(current_value)) { //If is already in the Set

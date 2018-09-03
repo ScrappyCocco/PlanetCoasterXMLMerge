@@ -536,10 +536,10 @@ class Window extends JFrame {
                 manage_exception();
                 print_log("Error (PlanetCoasterWriterException):" + err.toString());
                 displayError("Error (PlanetCoasterWriterException):" + err.toString());
-            } catch (java.io.UnsupportedEncodingException err) {
+            } catch (Exception err) {
                 manage_exception();
-                print_log("Error (UnsupportedEncodingException):" + err.toString());
-                displayError("Error (UnsupportedEncodingException):" + err.toString());
+                print_log("Error (Generic Exception):" + err.toString());
+                displayError("Error (Generic Exception):" + err.toString());
             }
         }
     }//END OF XMLFilePath_class
@@ -633,11 +633,11 @@ class Window extends JFrame {
                 //process ended
                 result.setText("End of duplicates search!");
                 displayInfo("End of duplicates search! Found:" + duplicates_searcher.getNumberDuplicates_found() + " duplicates!");
-            } catch (java.io.UnsupportedEncodingException err) {
-                print_log("Error (UnsupportedEncodingException):" + err);
-                displayError(err.toString());
             } catch (PlanetCoasterWriterException err) {
                 print_log("Error (PlanetCoasterWriterException):" + err);
+                displayError(err.toString());
+            } catch (Exception err) {
+                print_log("Error (Generic Exception):" + err);
                 displayError(err.toString());
             }
             toggleButtons(true);

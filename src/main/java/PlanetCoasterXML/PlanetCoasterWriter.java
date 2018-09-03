@@ -16,6 +16,7 @@ import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashSet;
 import org.w3c.dom.Element;
@@ -47,10 +48,9 @@ public class PlanetCoasterWriter {
      *
      * @param input_final_file The reader to use to generate the XML Document
      * @return A XML Document, created from the input Reader
-     * @throws PlanetCoasterWriterException         Exception thrown if an error occur reading the new document
-     * @throws java.io.UnsupportedEncodingException Exception thrown if an error occur decoding a value
+     * @throws PlanetCoasterWriterException Exception thrown if an error occur reading the new document
      */
-    public static Document generate_xml_output(PlanetCoasterReader input_final_file) throws PlanetCoasterWriterException, java.io.UnsupportedEncodingException {
+    public static Document generate_xml_output(PlanetCoasterReader input_final_file) throws PlanetCoasterWriterException {
         Document xml_document;
         //initialize the xml Document and the DocumentBuilder
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -63,7 +63,9 @@ public class PlanetCoasterWriter {
         }
         //Start creating the root of the xml file
         Element root_element = xml_document.createElement("localisation"); //creating root node
-        root_element.setAttribute("xmlns", "http://www.planetcoaster.com/CommunityTranslation");
+        Attr xmlns_attrib = xml_document.createAttribute("xmlns");
+        xmlns_attrib.setValue("http://www.planetcoaster.com/CommunityTranslation");
+        root_element.setAttributeNode(xmlns_attrib);
         xml_document.appendChild(root_element); //Setting root child element
         Element translation = xml_document.createElement("translation");
         //----------------------------------------------------------
@@ -74,7 +76,7 @@ public class PlanetCoasterWriter {
         for (final String xml_key : input_final_file.loaded_file_multimap.keys()) {
             if (xml_key.contains("XMLPARSER-Comment")) { //It's a comment, create a XML comment, and attach it
                 comments_counter++;
-                comment = xml_document.createComment(new String(input_final_file.loaded_file_multimap.get(xml_key).get(0), "UTF-8"));
+                comment = xml_document.createComment(new String(input_final_file.loaded_file_multimap.get(xml_key).get(0), StandardCharsets.UTF_8));
                 translation.appendChild(comment);
             } else { //It's a entry, create a XML tag in planet coaster style, and attach it
                 entry = xml_document.createElement("entry"); //creating the node (tag)
@@ -82,7 +84,7 @@ public class PlanetCoasterWriter {
                 key.setValue(xml_key);
                 entry.setAttributeNode(key);
                 Attr translation_attr = xml_document.createAttribute("translation"); //creating the attr
-                translation_attr.setValue(new String(input_final_file.loaded_file_multimap.get(xml_key).get(0), "UTF-8"));
+                translation_attr.setValue(new String(input_final_file.loaded_file_multimap.get(xml_key).get(0), StandardCharsets.UTF_8));
                 entry.setAttributeNode(translation_attr);
                 translation.appendChild(entry);
             }
@@ -134,7 +136,7 @@ public class PlanetCoasterWriter {
         }
         Window.print_log("Saving the file...");
         //write the file using utf-8
-        Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(output_file_name), "UTF-8"));
+        Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(output_file_name), StandardCharsets.UTF_8));
         out.write(output);
         out.close();
         Window.print_log("File Saved!");
@@ -183,7 +185,7 @@ public class PlanetCoasterWriter {
                 Window.print_log("Creation of " + fileName + " started...");
                 PrintWriter writer = new PrintWriter(fileName, "UTF-8");
                 for (final byte[] output_string : input_array) {
-                    writer.println("\"" + new String(output_string, "UTF-8") + "\""); //print string to file
+                    writer.println("\"" + new String(output_string, StandardCharsets.UTF_8) + "\""); //print string to file
                 }
                 writer.close();
                 Window.print_log("Creation of " + fileName + " successfully ended!");
@@ -245,10 +247,10 @@ public class PlanetCoasterWriter {
                             }//end key check cycle
                         }
                         if (!avoid_key) { //I can print that key
-                            writer.println(key + " - " + new String(multimap.get(key).get(0), "UTF-8")); //print string to file
+                            writer.println(key + " - " + new String(multimap.get(key).get(0), StandardCharsets.UTF_8)); //print string to file
                         }
                     } else { //consider_keys_to_avoid = false, just write normally
-                        writer.println(key + " - " + new String(multimap.get(key).get(0), "UTF-8")); //print string to file
+                        writer.println(key + " - " + new String(multimap.get(key).get(0), StandardCharsets.UTF_8)); //print string to file
                     }
                 }
                 writer.close();
