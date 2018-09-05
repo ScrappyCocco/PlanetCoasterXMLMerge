@@ -136,6 +136,7 @@ public class PlanetCoasterReader {
 
     /**
      * This function extract all the entries from the loaded file, returning them
+     * REMEMBER that if "isfinalfile" is true this include comments
      *
      * @return an ArrayList with all the values (entries) in the loaded file
      */

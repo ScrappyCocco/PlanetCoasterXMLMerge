@@ -10,6 +10,8 @@ import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashSet;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -27,6 +29,8 @@ public class PlanetCoasterToolTest {
 
     @Test
     public void PlanetCoasterReaderTest() throws PlanetCoasterReaderException {
+        System.out.println("---PlanetCoasterReaderTest begin---");
+
         PlanetCoasterReader reader;
 
         reader = new PlanetCoasterReader("Example Files/Old_File.xml", false);
@@ -63,10 +67,14 @@ public class PlanetCoasterToolTest {
         } catch (PlanetCoasterReaderException err) {
             System.out.println("Error received for BadXMLFile:" + err);
         }
+
+        System.out.println("---PlanetCoasterReaderTest end---");
     }
 
     @Test
-    public void PlanetCoasterDuplicatesTest() throws PlanetCoasterReaderException, java.io.UnsupportedEncodingException {
+    public void PlanetCoasterDuplicatesTest() throws PlanetCoasterReaderException {
+        System.out.println("---PlanetCoasterDuplicatesTest begin---");
+
         PlanetCoasterReader reader;
         PlanetCoasterDuplicates duplicates;
 
@@ -104,10 +112,14 @@ public class PlanetCoasterToolTest {
         assertFalse(duplicates.file_has_duplicates(), "PlanetCoasterDuplicatesTest Error 1 from cleared New_File_WithDuplicates.xml - getNumberDuplicates_found boolean not correct!");
         assertEquals(0, duplicates.getNumberDuplicates_found(), "PlanetCoasterDuplicatesTest Error 2 from cleared New_File_WithDuplicates.xml - getNumberDuplicates_found not correct!");
         assertEquals(0, duplicates.getDuplicatesKeys().size(), "PlanetCoasterDuplicatesTest Error 3 from cleared New_File_WithDuplicates.xml - getDuplicatesKeys size not correct!");
+
+        System.out.println("---PlanetCoasterDuplicatesTest end---");
     }
 
     @Test
-    public void PlanetCoasterMergeTest() throws PlanetCoasterReaderException, java.io.UnsupportedEncodingException {
+    public void PlanetCoasterMergeTest() throws PlanetCoasterReaderException {
+        System.out.println("---PlanetCoasterMergeTest begin---");
+
         PlanetCoasterReader reader1, reader2;
         PlanetCoasterMerge merge;
 
@@ -146,10 +158,51 @@ public class PlanetCoasterToolTest {
         assertEquals(6, merge.getRemovedKeys().size(), "PlanetCoasterMergeTest Error 1 from Old_File.xml && cleared New_File_WithDuplicates.xml - getRemovedKeys size not correct!");
         assertEquals(24100, merge.getFinalFile().loaded_file_multimap.size(), "PlanetCoasterMergeTest Error 2 from Old_File.xml && cleared New_File_WithDuplicates.xml - getFinalFile size not correct!");
 
+        System.out.println("---PlanetCoasterMergeTest end---");
+    }
+
+    @Test
+    public void PlanetCoasterExtractTest() throws PlanetCoasterReaderException {
+        System.out.println("---PlanetCoasterExtractTest begin---");
+
+        PlanetCoasterReader reader1, reader2;
+        PlanetCoasterMerge merge;
+
+        reader1 = new PlanetCoasterReader("Example Files/Old_File.xml", false);
+        ArrayList<byte[]> result = reader1.extractValues();
+        assertEquals("Translation First Key - AAA", new String(result.get(0), StandardCharsets.UTF_8), "PlanetCoasterExtractTest Error 1 from Old_File.xml - Extracted value not correct!");
+        assertEquals("Translation Second Key - BBB", new String(result.get(1), StandardCharsets.UTF_8), "PlanetCoasterExtractTest Error 2 from Old_File.xml - Extracted value not correct!");
+        assertEquals("Translation Third Key - FFF", new String(result.get(5), StandardCharsets.UTF_8), "PlanetCoasterExtractTest Error 3 from Old_File.xml - Extracted value not correct!");
+
+        reader2 = new PlanetCoasterReader("Example Files/New_File.xml", true);
+        result = reader2.extractValues();
+        //Remember that with isfinalfile = true this include comments so i need to change the index
+        assertEquals("Original First Key - A", new String(result.get(1), StandardCharsets.UTF_8), "PlanetCoasterExtractTest Error 1 from New_File.xml - Extracted value not correct!");
+        assertEquals("Original Second Key - B", new String(result.get(2), StandardCharsets.UTF_8), "PlanetCoasterExtractTest Error 2 from New_File.xml - Extracted value not correct!");
+        assertEquals("Original First Key - D", new String(result.get(5), StandardCharsets.UTF_8), "PlanetCoasterExtractTest Error 3 from New_File.xml - Extracted value not correct!");
+        assertEquals("Original Third Key - I", new String(result.get(11), StandardCharsets.UTF_8), "PlanetCoasterExtractTest Error 4 from New_File.xml - Extracted value not correct!");
+
+        merge = new PlanetCoasterMerge(reader1, reader2);
+        result = merge.getFinalFile().extractValues();
+        assertEquals("Translation First Key - AAA", new String(result.get(1), StandardCharsets.UTF_8), "PlanetCoasterExtractTest Error 1 from merge - Extracted value not correct!");
+        assertEquals("Translation Second Key - BBB", new String(result.get(2), StandardCharsets.UTF_8), "PlanetCoasterExtractTest Error 2 from merge - Extracted value not correct!");
+        assertEquals("Translation Third Key - CCC", new String(result.get(3), StandardCharsets.UTF_8), "PlanetCoasterExtractTest Error 3 from merge - Extracted value not correct!");
+        assertEquals("Original First Key - G", new String(result.get(9), StandardCharsets.UTF_8), "PlanetCoasterExtractTest Error 4 from merge - Extracted value not correct!");
+        assertEquals("Original Second Key - H", new String(result.get(10), StandardCharsets.UTF_8), "PlanetCoasterExtractTest Error 5 from merge - Extracted value not correct!");
+        assertEquals("Original Third Key - I", new String(result.get(11), StandardCharsets.UTF_8), "PlanetCoasterExtractTest Error 6 from merge - Extracted value not correct!");
+
+        result = merge.getFinalFile().extractComments();
+        assertEquals("Section1", new String(result.get(0), StandardCharsets.UTF_8), "PlanetCoasterExtractTest Error 1 from merge comments - Extracted value not correct!");
+        assertEquals("Section2", new String(result.get(1), StandardCharsets.UTF_8), "PlanetCoasterExtractTest Error 2 from merge comments - Extracted value not correct!");
+        assertEquals("Section3", new String(result.get(2), StandardCharsets.UTF_8), "PlanetCoasterExtractTest Error 3 from merge comments - Extracted value not correct!");
+
+        System.out.println("---PlanetCoasterExtractTest end---");
     }
 
     @Test
     public void PlanetCoasterWriteTest() throws PlanetCoasterReaderException, PlanetCoasterWriterException, java.io.IOException {
+        System.out.println("---PlanetCoasterWriteTest begin---");
+
         PlanetCoasterReader reader1, reader2;
         PlanetCoasterMerge merge;
 
@@ -183,5 +236,7 @@ public class PlanetCoasterToolTest {
         avoid.add("XMLPARSER-Comment");
         PlanetCoasterWriter.write_multimap_to_file(reader1.loaded_file_multimap, "multimap2.txt", avoid, false);
         assertEquals(9, countLines("multimap2.txt"), "Number of lines in multimap2.txt not correct!");
+
+        System.out.println("---PlanetCoasterWriteTest end---");
     }
 }
