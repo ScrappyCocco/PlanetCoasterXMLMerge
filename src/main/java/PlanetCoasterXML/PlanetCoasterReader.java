@@ -12,44 +12,47 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXParseException;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+
 import com.google.common.collect.LinkedListMultimap;
 
 //CLASS
 
 /**
  * This class read a single planet coaster xml file storing the data in a LinkedListMultimap;
- * I cannot use a normal HashMap because i need duplicate keys, and to keep the insertion order
+ * I cannot use a normal HashMap because i need duplicate keys, and to keep the insertion order.
  * <br>
- * The Keys are Strings because the translations Keys are simple strings
+ * The Keys are Strings because the translations Keys are simple strings.
  * <br>
  * The translated phrase is stored into a byte[] because i can store it in UTF-8 (or another encoding if i want to change).
  */
 public class PlanetCoasterReader {
     //----------------------------------------------------------
     /**
-     * LinkedListMultimap that contains the loaded file
+     * LinkedListMultimap that contains the loaded file.
      */
     public LinkedListMultimap<String, byte[]> loaded_file_multimap;
+
     /**
-     * Boolean that represent if is the new file, if so i need to store comments
+     * Boolean that represent if is the new file, if so i need to store comments.
      */
     private final boolean isnewFile;
     //----------------------------------------------------------
 
     /**
-     * The constructor method open the file and call a method to fill the LinkedListMultimap
+     * The constructor method open the file and call a method to fill the LinkedListMultimap.
      *
-     * @param file_to_open the path with the filename to open
-     * @param isfinalfile  if is the final file i need to consider comments
-     * @throws PlanetCoasterReaderException throw an invalid UTF-8 charset exception (from scan_node()) or a generic Exception if the XML file is not valid
+     * @param file_to_open the path with the filename to open;
+     * @param isfinalfile  if is the final file i need to consider comments;
+     * @throws PlanetCoasterReaderException throw an invalid UTF-8 charset exception (from scan_node()) or a generic Exception if the XML file is not valid;
      */
-    public PlanetCoasterReader(String file_to_open, boolean isfinalfile) throws PlanetCoasterReaderException {
+    public PlanetCoasterReader(final String file_to_open, final boolean isfinalfile) throws PlanetCoasterReaderException {
         Element root; //The root element of the xml file
         Document document_file;
         isnewFile = isfinalfile; //if is the new file i need to store comments
@@ -80,18 +83,19 @@ public class PlanetCoasterReader {
         } catch (Exception e) { //generic error
             throw new PlanetCoasterReaderException("Generic Error-->" + e.getMessage());
         }
-    }//Constructor
+    } //Constructor
 
     /**
-     * This method scan all the nodes under the root
+     * This method scan all the nodes under the root.
      * <br>
-     * While scanning all the nodes, this method fill the two arrays with all the values
+     * While scanning all the nodes, this method fill the two arrays with all the values.
      *
-     * @param node the root node, where i start to scan
-     * @throws PlanetCoasterReaderException if the string format is not valid
+     * @param inputNode the root node, where i start to scan;
+     * @throws PlanetCoasterReaderException if the string format is not valid;
      */
-    private void scan_node(Node node) throws PlanetCoasterReaderException {
+    private void scan_node(final Node inputNode) throws PlanetCoasterReaderException {
         Window.print_log("---------------------------");
+        Node node = inputNode;
         Window.print_log("Inside the XML File");
         NodeList child_nodes_list = node.getChildNodes(); //Entering root childs
         int childs_count = child_nodes_list.getLength(); //Counting childrens
@@ -114,9 +118,9 @@ public class PlanetCoasterReader {
                             loaded_file_multimap.put("XMLPARSER-Comment " + comment_index, comment.getData().getBytes(Charset.forName("UTF-8")));
                             comment_index++;
                         }
-                    }//is_new_file
-                }//else_is_a_comment
-            }//for_en
+                    } //is_new_file
+                } //else_is_a_comment
+            } //for_en
         } catch (Exception e) {
             Window.print_log("An error occurred during the scan of the xml file!");
             throw new PlanetCoasterReaderException("Scan node error-->" + e.getMessage());
@@ -126,21 +130,21 @@ public class PlanetCoasterReader {
     }
 
     /**
-     * This function extract all the keys from the loaded file, returning them
+     * This function extract all the keys from the loaded file, returning them.
      *
-     * @return an ArrayList with all the keys in the loaded file
+     * @return an ArrayList with all the keys in the loaded file;
      */
-    public ArrayList<String> extractKeys() {
+    public final ArrayList<String> extractKeys() {
         return new ArrayList<String>(loaded_file_multimap.keys());
     }
 
     /**
-     * This function extract all the entries from the loaded file, returning them
-     * REMEMBER that if "isfinalfile" is true this include comments
+     * This function extract all the entries from the loaded file, returning them.
+     * REMEMBER that if "isfinalfile" is true this include comments.
      *
-     * @return an ArrayList with all the values (entries) in the loaded file
+     * @return an ArrayList with all the values (entries) in the loaded file;
      */
-    public ArrayList<byte[]> extractValues() {
+    public final ArrayList<byte[]> extractValues() {
         ArrayList<byte[]> return_array = new ArrayList<byte[]>();
         for (final String key : loaded_file_multimap.keys()) {
             //I want to add all the entries that has a key
@@ -150,15 +154,15 @@ public class PlanetCoasterReader {
     }
 
     /**
-     * This function extract all the comments from the loaded file, returning them
+     * This function extract all the comments from the loaded file, returning them.
      * <br>
-     * Remember that the reader has "isnewFile", this means the comments are loaded only in the second file
+     * Remember that the reader has "isnewFile", this means the comments are loaded only in the second file.
      * <br>
-     * (You can simply change that in the Window class if you want, setting it at true)
+     * (You can simply change that in the Window class if you want, setting it at true).
      *
-     * @return an ArrayList with all the comments in the loaded file
+     * @return an ArrayList with all the comments in the loaded file;
      */
-    public ArrayList<byte[]> extractComments() {
+    public final ArrayList<byte[]> extractComments() {
         ArrayList<byte[]> return_array = new ArrayList<byte[]>();
         for (final String key : loaded_file_multimap.keys()) {
             if (key.contains("XMLPARSER-Comment")) {
@@ -168,4 +172,4 @@ public class PlanetCoasterReader {
         return return_array;
     }
 
-}//end_class
+} //end_class

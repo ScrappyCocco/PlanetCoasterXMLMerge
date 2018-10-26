@@ -5,36 +5,38 @@ package PlanetCoasterXML;
 //IMPORTS
 
 import com.google.common.collect.LinkedListMultimap;
+
 import java.nio.charset.StandardCharsets;
 
 //CLASS
 
 /**
- * This class merge two PlanetCoasterReader using their keys
+ * This class merge two PlanetCoasterReader using their keys.
  * <br>
  * It's basically the class that take the translations from the old file and put them in the new file.
  */
 public class PlanetCoasterMerge {
     //----------------------------------------------------------
     /**
-     * Reference to first and second file that will used in the merge
+     * Reference to first and second file that will used in the merge.
      */
     private final PlanetCoasterReader first_file, second_file;
+
     /**
-     * A LinkedListMultimap that contains the string removed during the merge
+     * A LinkedListMultimap that contains the string removed during the merge.
      */
     private LinkedListMultimap<String, byte[]> string_loss_multimap;
     //----------------------------------------------------------
 
     /**
-     * The constructor ask for two PlanetCoasterReader to merge using their keys
+     * The constructor ask for two PlanetCoasterReader to merge using their keys.
      * <br>
-     * The result of the merge can be accessed with getFinalFile()
+     * The result of the merge can be accessed with getFinalFile().
      *
-     * @param first_input_file  The first file (old xml file) to use in the merge
-     * @param second_input_file The second file (new xml file) to use in the merge
+     * @param first_input_file  The first file (old xml file) to use in the merge;
+     * @param second_input_file The second file (new xml file) to use in the merge;
      */
-    public PlanetCoasterMerge(PlanetCoasterReader first_input_file, PlanetCoasterReader second_input_file) {
+    public PlanetCoasterMerge(final PlanetCoasterReader first_input_file, final PlanetCoasterReader second_input_file) {
         //Saving values for later
         first_file = first_input_file;
         second_file = second_input_file;
@@ -55,46 +57,46 @@ public class PlanetCoasterMerge {
     }
 
     /**
-     * This constructor use the other constructor, after creating the Readers from the file paths
+     * This constructor use the other constructor, after creating the Readers from the file paths.
      * <br>
-     * Currently this is not used, it's here for convenience because it could be useful
+     * Currently this is not used, it's here for convenience because it could be useful.
      *
-     * @param oldFilePath The path for the first file to load, used to create a PlanetCoasterReader
-     * @param newFilePath The path for the second file to load, used to create a PlanetCoasterReader
-     * @throws PlanetCoasterReaderException         Exception thrown if an error occur creating the two PlanetCoasterReader for the two files
+     * @param oldFilePath The path for the first file to load, used to create a PlanetCoasterReader;
+     * @param newFilePath The path for the second file to load, used to create a PlanetCoasterReader;
+     * @throws PlanetCoasterReaderException Exception thrown if an error occur creating the two PlanetCoasterReader for the two files;
      */
-    public PlanetCoasterMerge(String oldFilePath, String newFilePath) throws PlanetCoasterReaderException{
+    public PlanetCoasterMerge(final String oldFilePath, final String newFilePath) throws PlanetCoasterReaderException {
         this(new PlanetCoasterReader(oldFilePath, false), new PlanetCoasterReader(newFilePath, true));
-    }//Constructor
+    } //Constructor
 
     /**
-     * This function return the final file, created editing the second file during the merge
+     * This function return the final file, created editing the second file during the merge.
      *
-     * @return The final file, resulted from merging the first and the second
+     * @return The final file, resulted from merging the first and the second;
      */
-    public PlanetCoasterReader getFinalFile() {
+    public final PlanetCoasterReader getFinalFile() {
         return second_file;
     }
 
     /**
-     * This function return a LinkedListMultimap with all the strings lost during the merge
+     * This function return a LinkedListMultimap with all the strings lost during the merge.
      * <br>
-     * (Keys in the old file but not present in the new one)
+     * (Keys in the old file but not present in the new one).
      *
-     * @return A LinkedListMultimap with all the strings lost during the merge
+     * @return A LinkedListMultimap with all the strings lost during the merge;
      */
-    public LinkedListMultimap<String, byte[]> getRemovedKeys() {
+    public final LinkedListMultimap<String, byte[]> getRemovedKeys() {
         return string_loss_multimap;
     }
 
     /**
-     * This method was initially done to check if the user was using a PlanetCoaster XML file, blocking the merge otherwise
+     * This method was initially done to check if the user was using a PlanetCoaster XML file, blocking the merge otherwise.
      * <br>
-     * Now it just check if the file has a PlanetCoaster XML entry, but it does not block the merge
+     * Now it just check if the file has a PlanetCoaster XML entry, but it does not block the merge.
      *
-     * @param index Used to check before/after merge two different keys in the file
+     * @param index Used to check before/after merge two different keys in the file;
      */
-    private void keys_check(int index){
+    private void keys_check(final int index) {
         switch (index) {
             case 0:
                 Window.print_log("PRE-MERGE: Char utf8_values:");
@@ -112,14 +114,17 @@ public class PlanetCoasterMerge {
                     Window.print_log(new String(second_file.loaded_file_multimap.get("BuildingPartCategory_Building_Signs").get(0), StandardCharsets.UTF_8));
                 }
                 break;
+            default:
+                Window.print_log("WARNING: [keys_check() accept only 0 and 1]");
+                break;
         }
     }
 
     /**
      * This method merge the first LinkedListMultimap with the second,
-     * leaving the translated sentences and adding the sentences from the new file
+     * leaving the translated sentences and adding the sentences from the new file.
      * <br>
-     * The result is stored in the second file
+     * The result is stored in the second file.
      */
     private void merge_arrays() {
         Window.print_log("---------------------------");
@@ -143,4 +148,4 @@ public class PlanetCoasterMerge {
         Window.print_log("---------------------------");
     }
 
-}//end_class
+} //end_class

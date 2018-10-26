@@ -9,6 +9,7 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.Comment;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
+
 import java.io.BufferedWriter;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
@@ -19,9 +20,11 @@ import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashSet;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.ls.DOMImplementationLS;
 import org.w3c.dom.ls.LSSerializer;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -35,22 +38,22 @@ import javax.xml.transform.stream.StreamSource;
 //CLASS
 
 /**
- * This class is made of static methods because it does not need to have any field
+ * This class is made of static methods because it does not need to have any field.
  * <br>
  * Every method is useful to to write a list to a file or to prepare an output (for example preparing the xml code).
  */
 public class PlanetCoasterWriter {
 
     /**
-     * This function generate the xml Document from the reader
+     * This function generate the xml Document from the reader.
      * <br>
-     * It's used to prepare the xml output after the merge
+     * It's used to prepare the xml output after the merge.
      *
-     * @param input_final_file The reader to use to generate the XML Document
-     * @return A XML Document, created from the input Reader
-     * @throws PlanetCoasterWriterException Exception thrown if an error occur reading the new document
+     * @param input_final_file The reader to use to generate the XML Document;
+     * @return A XML Document, created from the input Reader;
+     * @throws PlanetCoasterWriterException Exception thrown if an error occur reading the new document;
      */
-    public static Document generate_xml_output(PlanetCoasterReader input_final_file) throws PlanetCoasterWriterException {
+    public static Document generate_xml_output(final PlanetCoasterReader input_final_file) throws PlanetCoasterWriterException {
         Document xml_document;
         //initialize the xml Document and the DocumentBuilder
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -96,14 +99,14 @@ public class PlanetCoasterWriter {
     }
 
     /**
-     * This function format the xml file (NOT MINE)
+     * This function format the xml file (NOT MINE).
      *
-     * @param input  the input xml to format
-     * @param indent the indentations for formatting the code (always 2 in this program)
-     * @return the new xml code formatted
-     * @throws javax.xml.transform.TransformerException throw a TransformerException if there are problems with the xml file
+     * @param input  the input xml to format;
+     * @param indent the indentations for formatting the code (always 2 in this program);
+     * @return the new xml code formatted;
+     * @throws javax.xml.transform.TransformerException throw a TransformerException if there are problems with the xml file;
      */
-    private static String prettyFormat(String input, int indent) throws javax.xml.transform.TransformerException {
+    private static String prettyFormat(final String input, final int indent) throws javax.xml.transform.TransformerException {
         Source xmlInput = new StreamSource(new StringReader(input));
         StringWriter stringWriter = new StringWriter();
         StreamResult xmlOutput = new StreamResult(stringWriter);
@@ -116,13 +119,13 @@ public class PlanetCoasterWriter {
     }
 
     /**
-     * This method write the XML document to an XML file
+     * This method write the XML document to an XML file.
      *
-     * @param xml_document     the xml document to write
-     * @param output_file_name the output file name
-     * @throws java.io.IOException if an error occur during the creation of the file
+     * @param xml_document     the xml document to write;
+     * @param output_file_name the output file name;
+     * @throws java.io.IOException if an error occur during the creation of the file;
      */
-    public static void write_xml_file(Document xml_document, String output_file_name) throws java.io.IOException {
+    public static void write_xml_file(final Document xml_document, final String output_file_name) throws java.io.IOException {
         DOMImplementation impl = xml_document.getImplementation();
         DOMImplementationLS implLS = (DOMImplementationLS) impl.getFeature("LS", "3.0");
         LSSerializer ser = implLS.createLSSerializer();
@@ -143,15 +146,15 @@ public class PlanetCoasterWriter {
     }
 
     /**
-     * This method write an ArrayList to a file, the file will have as name fileName
+     * This method write an ArrayList to a file, the file will have as name fileName.
      * <br>
-     * This is used mainly to write a file with the duplicate keys found using PlanetCoasterDuplicates
+     * This is used mainly to write a file with the duplicate keys found using PlanetCoasterDuplicates.
      *
-     * @param input_array The ArrayList with the values to write in the file
-     * @param fileName    The name of the file to create
-     * @throws PlanetCoasterWriterException Exception thrown if an error occur while writing the file (java.io.IOException)
+     * @param input_array The ArrayList with the values to write in the file;
+     * @param fileName    The name of the file to create;
+     * @throws PlanetCoasterWriterException Exception thrown if an error occur while writing the file (java.io.IOException);
      */
-    public static void write_string_array_to_file(ArrayList<String> input_array, String fileName) throws PlanetCoasterWriterException {
+    public static void write_string_array_to_file(final ArrayList<String> input_array, final String fileName) throws PlanetCoasterWriterException {
         try {
             if (input_array.size() > 0) {
                 Window.print_log("Creation of " + fileName + " started...");
@@ -171,15 +174,15 @@ public class PlanetCoasterWriter {
     }
 
     /**
-     * This method write an ArrayList to a file, the file will have as name fileName
+     * This method write an ArrayList to a file, the file will have as name fileName.
      * <br>
-     * This is used mainly to write a file with the values of a Reader, for example the comments
+     * This is used mainly to write a file with the values of a Reader, for example the comments.
      *
-     * @param input_array The ArrayList with the values to write in the file (converting them to string)
-     * @param fileName    The name of the file to create
-     * @throws PlanetCoasterWriterException Exception thrown if an error occur while writing the file (java.io.IOException)
+     * @param input_array The ArrayList with the values to write in the file (converting them to string);
+     * @param fileName    The name of the file to create;
+     * @throws PlanetCoasterWriterException Exception thrown if an error occur while writing the file (java.io.IOException);
      */
-    public static void write_byte_array_to_file(ArrayList<byte[]> input_array, String fileName) throws PlanetCoasterWriterException {
+    public static void write_byte_array_to_file(final ArrayList<byte[]> input_array, final String fileName) throws PlanetCoasterWriterException {
         try {
             if (input_array.size() > 0) {
                 Window.print_log("Creation of " + fileName + " started...");
@@ -199,30 +202,30 @@ public class PlanetCoasterWriter {
     }
 
     /**
-     * This method write a LinkedListMultimap to a file, it use the other write_multimap_to_file with 3 parameters
+     * This method write a LinkedListMultimap to a file, it use the other write_multimap_to_file with 3 parameters.
      *
-     * @param multimap The multimap to write in the file
-     * @param fileName The name of the file to create
-     * @throws PlanetCoasterWriterException Exception thrown if an error occur while writing the file (java.io.IOException)
+     * @param multimap The multimap to write in the file;
+     * @param fileName The name of the file to create;
+     * @throws PlanetCoasterWriterException Exception thrown if an error occur while writing the file (java.io.IOException);
      */
-    public static void write_multimap_to_file(LinkedListMultimap<String, byte[]> multimap, String fileName) throws PlanetCoasterWriterException {
+    public static void write_multimap_to_file(final LinkedListMultimap<String, byte[]> multimap, final String fileName) throws PlanetCoasterWriterException {
         write_multimap_to_file(multimap, fileName, null, false);
     }
 
     /**
-     * This method write a LinkedListMultimap to a file, using format "Key - Value" for each line
+     * This method write a LinkedListMultimap to a file, using format "Key - Value" for each line.
      * <br>
-     * There is also a keys_to_avoid array, if the user want to not write some keys (used to not write comments for example)
+     * There is also a keys_to_avoid array, if the user want to not write some keys (used to not write comments for example).
      *
-     * @param multimap               The multimap to write in the file
-     * @param fileName               The name of the file to create
-     * @param keys_to_avoid          Array of the keys to skip while writing
-     * @param avoid_only_full_string (True and False are described below)
-     *                               if avoid_only_full_string is True = the key in keys_to_avoid must be equal to multimap key
-     *                               if avoid_only_full_string is False = the key in keys_to_avoid could be equal or could contain the multimap key
-     * @throws PlanetCoasterWriterException Exception thrown if an error occur while writing the file (java.io.IOException)
+     * @param multimap               The multimap to write in the file;
+     * @param fileName               The name of the file to create;
+     * @param keys_to_avoid          Array of the keys to skip while writing;
+     * @param avoid_only_full_string (True and False are described below),
+     *                               if avoid_only_full_string is True = the key in keys_to_avoid must be equal to multimap key,
+     *                               if avoid_only_full_string is False = the key in keys_to_avoid could be equal or could contain the multimap key;
+     * @throws PlanetCoasterWriterException Exception thrown if an error occur while writing the file (java.io.IOException);
      */
-    public static void write_multimap_to_file(LinkedListMultimap<String, byte[]> multimap, String fileName, HashSet<String> keys_to_avoid, boolean avoid_only_full_string) throws PlanetCoasterWriterException {
+    public static void write_multimap_to_file(final LinkedListMultimap<String, byte[]> multimap, final String fileName, final HashSet<String> keys_to_avoid, final boolean avoid_only_full_string) throws PlanetCoasterWriterException {
         try {
             if (multimap.size() > 0) { //if there is something to write
                 boolean consider_keys_to_avoid; //Boolean that indicate if i should consider the keys_to_avoid
@@ -244,7 +247,7 @@ public class PlanetCoasterWriter {
                                     avoid_key = true;
                                     break; //stop the cycle
                                 }
-                            }//end key check cycle
+                            } //end key check cycle
                         }
                         if (!avoid_key) { //I can print that key
                             writer.println(key + " - " + new String(multimap.get(key).get(0), StandardCharsets.UTF_8)); //print string to file
@@ -262,6 +265,6 @@ public class PlanetCoasterWriter {
             Window.print_log("Error creating the file:" + e.toString());
             throw new PlanetCoasterWriterException("File creation error-->" + e.getMessage());
         }
-    }//end of write_multimap_to_file
+    } //end of write_multimap_to_file
 
-}//end_class
+} //end_class

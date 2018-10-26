@@ -5,6 +5,7 @@ package PlanetCoasterXML;
 //IMPORTS
 
 import com.google.common.collect.LinkedListMultimap;
+
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -18,21 +19,22 @@ import java.util.Set;
 public class PlanetCoasterDuplicates {
     //----------------------------------------------------------
     /**
-     * Array that store the duplicates keys found
+     * Array that store the duplicates keys found.
      */
     private ArrayList<String> duplicatesKeys;
+
     /**
-     * Boolean that represent if there are duplicates in the given file
+     * Boolean that represent if there are duplicates in the given file.
      */
     private boolean duplicates_found;
     //----------------------------------------------------------
 
     /**
-     * This constructor take a PlanetCoasterReader in input, and check if there is any duplicate key
+     * This constructor take a PlanetCoasterReader in input, and check if there is any duplicate key.
      *
-     * @param file The input file to check for duplicates
+     * @param file The input file to check for duplicates;
      */
-    public PlanetCoasterDuplicates(PlanetCoasterReader file) {
+    public PlanetCoasterDuplicates(final PlanetCoasterReader file) {
         //----------------------------------------------------------
         //scan for duplicates
         analyze_duplicates(file);
@@ -44,50 +46,50 @@ public class PlanetCoasterDuplicates {
     }
 
     /**
-     * This constructor use the other constructor, after creating the Readers from the file path
+     * This constructor use the other constructor, after creating the Readers from the file path.
      * <br>
-     * Currently this is not used, it's here for convenience because it could be useful
+     * Currently this is not used, it's here for convenience because it could be useful.
      *
-     * @param filePath the path of the file to load
-     * @throws PlanetCoasterReaderException         Exception thrown if an error occur creating the PlanetCoasterReader
+     * @param filePath the path of the file to load;
+     * @throws PlanetCoasterReaderException Exception thrown if an error occur creating the PlanetCoasterReader;
      */
-    public PlanetCoasterDuplicates(String filePath) throws PlanetCoasterReaderException{
+    public PlanetCoasterDuplicates(final String filePath) throws PlanetCoasterReaderException {
         this(new PlanetCoasterReader(filePath, true));
     }
 
     /**
-     * This function return a boolean that indicate if the file has duplicates or not
+     * This function return a boolean that indicate if the file has duplicates or not.
      *
-     * @return A boolean that indicate if the file has duplicates or nor
+     * @return A boolean that indicate if the file has duplicates or nor;
      */
-    public boolean file_has_duplicates() {
+    public final boolean file_has_duplicates() {
         return duplicates_found;
     }
 
     /**
-     * This function return an integer value that indicate the number of duplicates found
+     * This function return an integer value that indicate the number of duplicates found.
      *
-     * @return An integer value that indicate the number of duplicates found
+     * @return An integer value that indicate the number of duplicates found;
      */
-    public int getNumberDuplicates_found() {
+    public final int getNumberDuplicates_found() {
         return duplicatesKeys.size();
     }
 
     /**
-     * This function return an ArrayList that contains all the duplicate keys found
+     * This function return an ArrayList that contains all the duplicate keys found.
      *
-     * @return An ArrayList that contains all the duplicate keys found
+     * @return An ArrayList that contains all the duplicate keys found;
      */
-    public ArrayList<String> getDuplicatesKeys() {
+    public final ArrayList<String> getDuplicatesKeys() {
         return duplicatesKeys;
     }
 
     /**
-     * This method analyze if there are duplicates in the keys of the "fileSelected" file
+     * This method analyze if there are duplicates in the keys of the "fileSelected" file.
      *
-     * @param fileSelected the file to analyze
+     * @param fileSelected the file to analyze;
      */
-    private void analyze_duplicates(PlanetCoasterReader fileSelected) {
+    private void analyze_duplicates(final PlanetCoasterReader fileSelected) {
         duplicatesKeys = new ArrayList<String>();
         Set<String> duplicates = new HashSet<String>(); //Using an HashSet for convenience and speed
         String current_value;
@@ -107,21 +109,21 @@ public class PlanetCoasterDuplicates {
             } else { //Not a duplicate
                 duplicates.add(current_value); //Put it in the Set
             }
-        }//end_for
+        } //end_for
     }
 
     /**
-     * This function edit a LinkedListMultimap removing all duplicate keys
+     * This function edit a LinkedListMultimap removing all duplicate keys.
      * <br>
-     * This should be used only with an original file
+     * This should be used only with an original file.
      * <br>
-     * If the file has been edited from someone (translated in part for example) this could lead to losing some important entries
-     * (Because the cycle when find a key, start removing all his duplicates)
+     * If the file has been edited from someone (translated in part for example) this could lead to losing some important entries.
+     * (Because the cycle when find a key, start removing all his duplicates).
      *
-     * @param input_map The LinkedListMultimap to clear from duplicates
-     * @return A copy of the input LinkedListMultimap without duplicates
+     * @param input_map The LinkedListMultimap to clear from duplicates;
+     * @return A copy of the input LinkedListMultimap without duplicates;
      */
-    public static LinkedListMultimap<String, byte[]> clear_from_duplicates(LinkedListMultimap<String, byte[]> input_map) {
+    public static LinkedListMultimap<String, byte[]> clear_from_duplicates(final LinkedListMultimap<String, byte[]> input_map) {
         Window.print_log("Starting file cleaning...");
         for (final String key : input_map.keys()) { //for each key in the input file
             if (input_map.get(key).size() > 1) { //if there's more than 1 key
@@ -135,4 +137,4 @@ public class PlanetCoasterDuplicates {
         return input_map;
     }
 
-}//end_class
+} //end_class

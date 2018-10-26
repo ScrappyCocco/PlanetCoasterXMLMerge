@@ -33,6 +33,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.net.URL;
 import java.net.URLConnection;
+
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.w3c.dom.Document;
@@ -43,43 +44,63 @@ import org.w3c.dom.Document;
  * This class create the main window with the buttons to choose the 2 files and to create the new file;
  * This class has a listener for each button, plus some threads for the processing.
  */
-class Window extends JFrame {
+final class Window extends JFrame {
 
     /**
-     * Labels used in the window to tell the user the status of the program
+     * Labels used in the window to tell the user the status of the program.
      */
     private final JLabel labelOldFile, labelNewFile, result, label_first_file_status, label_second_file_status;
+
     /**
-     * Buttons in the window
+     * Buttons in the window.
      */
     private final JButton elaborate, selectOldFile, selectNewFile, duplicates, print_text;
 
     /**
-     * Fields that save the path to the loaded files
+     * Fields that save the path to the loaded files.
      */
     private String path_old_file, path_new_file;
+
     /**
-     * Fields that represent the loaded files
+     * Fields that represent the loaded files.
      */
     private PlanetCoasterReader first_file, second_file;
+
     /**
-     * Field used to check if the file has been loaded
+     * Field used to check if the file has been loaded.
      */
     private boolean done_first_file = false, done_second_file = false;
 
     //default windows translation location
     //These variables are read from config.json using loadVariablesFromJson()
+    /**
+     * Default path to open when the user click "Open file", the rest of it is in config.json.
+     */
     private String default_path = "C:\\Users\\" + System.getProperty("user.name") + "\\";
+
+    /**
+     * Url to check the last program version, loaded from config.json.
+     */
     private String github_api_url;
+
+    /**
+     * Current program version.
+     */
     private String version;
 
+    /**
+     * Program default font.
+     */
     private final String font = "Verdana";
+    /**
+     * Program default font size.
+     */
     private final int fontSize = 14;
 
     /**
      * Draw the main window with buttons and labels...
      * <br>
-     * (this constructor is not an important part of the program, it just create the UI)
+     * (this constructor is not an important part of the program, it just create the UI).
      */
     private Window() {
         //First load variables
@@ -207,31 +228,31 @@ class Window extends JFrame {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setVisible(true);
         print_log("Program ready");
-    }//END OF Constructor
+    } //END OF Constructor
 
     //------------------------------------------------------------------------------------------------------------
     //BEGIN OF USEFUL METHODS
 
     /**
-     * Method that enable/disable the buttons during files processing
+     * Method that enable/disable the buttons during files processing.
      *
-     * @param active is the buttons should be active or not
+     * @param active is the buttons should be active or not;
      */
-    private void toggleButtons(boolean active) {
+    private void toggleButtons(final boolean active) {
         selectOldFile.setEnabled(active);
         selectNewFile.setEnabled(active);
         elaborate.setEnabled(active);
         duplicates.setEnabled(active);
         print_text.setEnabled(active);
-    }////END OF toggle_buttons
+    } //END OF toggle_buttons
 
 
     /**
-     * Method that display an error box, called when an error occurs
+     * Method that display an error box, called when an error occurs.
      *
-     * @param errorMessage the error message to display in the box
+     * @param errorMessage the error message to display in the box;
      */
-    private void displayError(String errorMessage) {
+    private void displayError(final String errorMessage) {
         result.setText("<html><i>An error occurred</i></html>");
         JLabel error_label = new JLabel(errorMessage);
         error_label.setFont(new Font(font, Font.BOLD, fontSize + 2));
@@ -239,15 +260,15 @@ class Window extends JFrame {
                 error_label,
                 "An error occurred",
                 JOptionPane.ERROR_MESSAGE);
-    }//END OF displayError
+    } //END OF displayError
 
 
     /**
-     * Method that display an info box, called when an event need to display information
+     * Method that display an info box, called when an event need to display information.
      *
-     * @param infoMessage the information message to display in the box
+     * @param infoMessage the information message to display in the box;
      */
-    private void displayInfo(String infoMessage) {
+    private void displayInfo(final String infoMessage) {
         JLabel text_label = new JLabel("<html>" + infoMessage + "<br/>(Check console log for more)</html>");
         text_label.setFont(new Font(font, Font.PLAIN, fontSize));
         JOptionPane.showMessageDialog(this,
@@ -256,21 +277,21 @@ class Window extends JFrame {
 
 
     /**
-     * Static method to pretty print the log with time
+     * Static method to pretty print the log with time.
      *
-     * @param s String to print
+     * @param s String to print;
      */
-    static void print_log(String s) {
+    static void print_log(final String s) {
         Date date = new Date();
         SimpleDateFormat ft = new SimpleDateFormat("hh:mm:ss");
         System.out.println(ft.format(date) + "-->" + s);
-    }//END OF print_log
+    } //END OF print_log
 
 
     /**
-     * This method check the program version on github and compare it with the current version
+     * This method check the program version on github and compare it with the current version.
      * <br>
-     * If the github version is newer a notification appears
+     * If the github version is newer a notification appears;
      */
     private void programVersionControl() {
         print_log("---STARTING programVersionControl---");
@@ -297,11 +318,11 @@ class Window extends JFrame {
             print_log("VERSION CHECK ERROR - " + ex.toString());
         }
         print_log("---END OF programVersionControl---");
-    }//END OF programVersionControl
+    } //END OF programVersionControl
 
 
     /**
-     * This method load some variables from the file config.json
+     * This method load some variables from the file config.json.
      */
     private void loadVariablesFromJson() {
         try {
@@ -325,12 +346,12 @@ class Window extends JFrame {
             print_log("Error (ParseException):" + err);
             displayError(err.toString());
         }
-    }//END OF loadVariablesFromJson
+    } //END OF loadVariablesFromJson
 
     /**
-     * This function show a popup to let the user choose the first or the second file
+     * This function show a popup to let the user choose the first or the second file.
      *
-     * @return an integer that represent the file chosen, 0 is the first file, 1 the second one
+     * @return an integer that represent the file chosen, 0 is the first file, 1 the second one;
      */
     private int choose_old_or_new_file() {
         String[] options = {"First file (Old XML)", "Second file (New XML)"};
@@ -345,25 +366,25 @@ class Window extends JFrame {
     }
 
     /**
-     * This function use the other manage_choose_old_or_new_file
+     * This function use the other manage_choose_old_or_new_file.
      * <br>
-     * Currently this is not used, it's here for convenience because it could be useful
+     * Currently this is not used, it's here for convenience because it could be useful.
      *
-     * @return The PlanetCoasterReader corresponding to the first or to the second file
+     * @return The PlanetCoasterReader corresponding to the first or to the second file;
      */
     private PlanetCoasterReader manage_choose_old_or_new_file() {
         return manage_choose_old_or_new_file(false);
     }
 
     /**
-     * This function use choose_old_or_new_file() to let the user choose the first or the second file
+     * This function use choose_old_or_new_file() to let the user choose the first or the second file.
      * <br>
-     * If the file is not valid (not loaded) an error occur, and this function return a NULL value
+     * If the file is not valid (not loaded) an error occur, and this function return a NULL value.
      *
-     * @param display_errors if the method should use displayError() to show errors to the user
-     * @return The PlanetCoasterReader corresponding to the first or to the second file, NULL if the file is not valid (because is not loaded)
+     * @param display_errors if the method should use displayError() to show errors to the user;
+     * @return The PlanetCoasterReader corresponding to the first or to the second file, NULL if the file is not valid (because is not loaded);
      */
-    private PlanetCoasterReader manage_choose_old_or_new_file(boolean display_errors) {
+    private PlanetCoasterReader manage_choose_old_or_new_file(final boolean display_errors) {
         int file_chosen = choose_old_or_new_file();
         if (file_chosen == 0) { //First file
             if (done_first_file) {
@@ -396,25 +417,31 @@ class Window extends JFrame {
 
 
     /**
-     * Listener for choose the XML file
+     * Listener for choose the XML file.
      * <br>
-     * This class ask the user to chose a file, then load the file and check for duplicates
+     * This class ask the user to chose a file, then load the file and check for duplicates;
      */
     private class XMLFilePath implements ActionListener, Runnable {
-        final boolean isFirstFile;
-        final Window window_reference; //Used as parent frame to display messages
+        private final boolean isFirstFile;
+        private final Window window_reference; //Used as parent frame to display messages
 
-        XMLFilePath(boolean isFirst, Window win_ref) {
+        /**
+         * Constructor for inner class that open the xml
+         *
+         * @param isFirst if the user is opening the first file
+         * @param win_ref window reference to call methods and to set window parent
+         */
+        XMLFilePath(final boolean isFirst, final Window win_ref) {
             window_reference = win_ref;
             isFirstFile = isFirst;
         }
 
         /**
-         * This listener open the file-chooser window to choose the file to analyze
+         * This listener open the file-chooser window to choose the file to analyze.
          *
-         * @param e the button that called the action
+         * @param e the button that called the action;
          */
-        public void actionPerformed(ActionEvent e) {
+        public void actionPerformed(final ActionEvent e) {
             JFileChooser fileChooser = new JFileChooser(); //create the file chooser
             javax.swing.filechooser.FileFilter f1;
             if (isFirstFile) {
@@ -448,12 +475,12 @@ class Window extends JFrame {
                 Thread t = new Thread(this); //i can create the file
                 t.start(); //starting the process thread
             }
-        }//button_pressed
+        } //button_pressed
 
         /**
-         * This method manage the exceptions that may occur in the thread
+         * This method manage the exceptions that may occur in the thread.
          * <br>
-         * Basically it display an error message that say why the file has not loaded
+         * Basically it display an error message that say why the file has not loaded.
          */
         private void manage_exception() {
             if (isFirstFile) {
@@ -466,15 +493,15 @@ class Window extends JFrame {
         }
 
         /**
-         * Thread execution for loading the files
+         * Thread execution for loading the files.
          * <br>
          * Loading the first file:
-         * If duplicate keys are found, a warning message is sent
+         * If duplicate keys are found, a warning message is sent.
          * <br>
          * Loading the second file:
          * If duplicate keys are found, the program ask the user if he want to remove the duplicates;
          * In that case, it overwrite the file loaded map;
-         * Otherwise, a warning message is sent
+         * Otherwise, a warning message is sent.
          */
         public void run() {
             try {
@@ -542,20 +569,27 @@ class Window extends JFrame {
                 displayError("Error (Generic Exception):" + err.toString());
             }
         }
-    }//END OF XMLFilePath_class
+    } //END OF XMLFilePath_class
 
 
     /**
-     * Listener that merge the 2 files with a thread
-     * (using PlanetCoasterWriter class)
+     * Listener that merge the 2 files with a thread.
+     * (using PlanetCoasterWriter class).
      */
     private class Elaborate_Files implements ActionListener, Runnable {
 
+        /**
+         * Default empty constructor
+         */
         Elaborate_Files() {
         }
 
-        //Function called when the elaborate button is pressed
-        public void actionPerformed(ActionEvent e) {
+        /**
+         * Function called when the elaborate button is pressed.
+         *
+         * @param e The action that action happened;
+         */
+        public void actionPerformed(final ActionEvent e) {
             if (done_first_file && done_second_file) { //only if both are true
                 Thread t = new Thread(this); //i can create the new file
                 t.start(); //starting the process thread
@@ -563,10 +597,10 @@ class Window extends JFrame {
                 result.setText("Select Files First!");
                 toggleButtons(true);
             }
-        }//button_pressed
+        } //button_pressed
 
         /**
-         * Thread that merge the two files and create the new file
+         * Thread that merge the two files and create the new file.
          */
         public void run() {
             toggleButtons(false);
@@ -591,22 +625,29 @@ class Window extends JFrame {
                 displayError(err.toString());
             }
             toggleButtons(true);
-        }//run_thread
-    }//END OF Elaborate_Class
+        } //run_thread
+    } //END OF Elaborate_Class
 
 
     /**
-     * Listener that open a file, and check for keys duplicates, saving them in a TXT file
-     * (using PlanetCoasterReader class)
+     * Listener that open a file, and check for keys duplicates, saving them in a TXT file.
+     * (using PlanetCoasterReader class).
      */
     private class Find_Duplicates implements ActionListener, Runnable {
-        PlanetCoasterReader file_choice;
+        private PlanetCoasterReader file_choice;
 
+        /**
+         * Default empty constructor
+         */
         Find_Duplicates() {
         }
 
-        //Function called when the duplicates button is pressed
-        public void actionPerformed(ActionEvent e) {
+        /**
+         * Function called when the duplicates button is pressed.
+         *
+         * @param e The action that action happened;
+         */
+        public void actionPerformed(final ActionEvent e) {
             if (done_first_file || done_second_file) { //only if both are true
                 file_choice = manage_choose_old_or_new_file(true);
                 if (file_choice != null) {
@@ -617,10 +658,10 @@ class Window extends JFrame {
                 result.setText("Select at least one file first!");
                 toggleButtons(true);
             }
-        }//button_pressed
+        } //button_pressed
 
         /**
-         * Thread that read a planet coaster file and check for Keys duplicates
+         * Thread that read a planet coaster file and check for Keys duplicates.
          */
         public void run() {
             toggleButtons(false);
@@ -641,22 +682,32 @@ class Window extends JFrame {
                 displayError(err.toString());
             }
             toggleButtons(true);
-        }//run_thread
-    }//END OF Duplicates_Class
+        } //run_thread
+    } //END OF Duplicates_Class
 
     /**
-     * Listener that print the elements of a file
+     * Listener that print the elements of a file.
      */
     private class PrintElements implements ActionListener, Runnable {
-        final Window window_reference;
-        PlanetCoasterReader file_choice;
+        private final Window window_reference;
+        private PlanetCoasterReader file_choice;
 
+        /**
+         * Constructor for PrintElements inner class.
+         *
+         * @param win_ref Window reference for methods and window parents;
+         */
         PrintElements(Window win_ref) {
             window_reference = win_ref;
         }
 
         final String[] options = {"Keys Only", "Entries Only", "Comments Only", "Keys and Entries"};
 
+        /**
+         * Function called when the print button is pressed.
+         *
+         * @param e The action that action happened;
+         */
         public void actionPerformed(ActionEvent e) {
             if (!(done_first_file || done_second_file)) {
                 result.setText("Select at least one file first!");
@@ -671,7 +722,7 @@ class Window extends JFrame {
         }
 
         /**
-         * Thread that ask the user what to print and then print the content to a file
+         * Thread that ask the user what to print and then print the content to a file.
          */
         public void run() {
             toggleButtons(false);
@@ -713,7 +764,7 @@ class Window extends JFrame {
                     default:
                         print_log("Case " + element_ask_result + " not controlled!");
                         break;
-                }//end switch
+                } //end switch
                 if (file_created) {
                     print_log("File print completed!");
                     displayInfo("File printed!");
@@ -725,15 +776,15 @@ class Window extends JFrame {
             }
             toggleButtons(true);
         }
-    }//END OF PrintElements
+    } //END OF PrintElements
 
     //------------------------------------------------------------------------------------------------------------
     //MAIN FUNCTION
 
     /**
-     * Main execution of the program
+     * Main execution of the program.
      *
-     * @param args main args
+     * @param args main args;
      */
     public static void main(String[] args) {
         System.out.println("---Execution started---");
