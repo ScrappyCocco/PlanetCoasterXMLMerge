@@ -139,9 +139,9 @@ public class PlanetCoasterWriter {
         }
         Window.print_log("Saving the file...");
         //write the file using utf-8
-        Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(output_file_name), StandardCharsets.UTF_8));
-        out.write(output);
-        out.close();
+        try (Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(output_file_name), StandardCharsets.UTF_8))) {
+            out.write(output);
+        }
         Window.print_log("File Saved!");
     }
 
@@ -186,11 +186,11 @@ public class PlanetCoasterWriter {
         try {
             if (input_array.size() > 0) {
                 Window.print_log("Creation of " + fileName + " started...");
-                PrintWriter writer = new PrintWriter(fileName, "UTF-8");
-                for (final byte[] output_string : input_array) {
-                    writer.println("\"" + new String(output_string, StandardCharsets.UTF_8) + "\""); //print string to file
+                try (PrintWriter writer = new PrintWriter(fileName, "UTF-8")) {
+                    for (final byte[] output_string : input_array) {
+                        writer.println("\"" + new String(output_string, StandardCharsets.UTF_8) + "\""); //print string to file
+                    }
                 }
-                writer.close();
                 Window.print_log("Creation of " + fileName + " successfully ended!");
             } else {
                 Window.print_log("Skipped creation of " + fileName + ", the list is empty...");
@@ -231,32 +231,32 @@ public class PlanetCoasterWriter {
                 boolean consider_keys_to_avoid; //Boolean that indicate if i should consider the keys_to_avoid
                 consider_keys_to_avoid = keys_to_avoid != null && keys_to_avoid.size() > 0; //Initialize the boolean
                 Window.print_log("Creation of " + fileName + " started...");
-                PrintWriter writer = new PrintWriter(fileName, "UTF-8");
-                for (final String key : multimap.keys()) { //For each key in the multimap
-                    if (consider_keys_to_avoid) { //I have to consider the keys_to_avoid
-                        boolean avoid_key = false; //Boolean that indicate if i have to skip this key or not
-                        if (avoid_only_full_string) {
-                            //The key must be equal
-                            if (keys_to_avoid.contains(key)) {
-                                avoid_key = true;
-                            }
-                        } else {
-                            //The key could be equal or can contain the multimap key
-                            for (final String keys_to_avoid_entry : keys_to_avoid) {
-                                if (key.equals(keys_to_avoid_entry) || key.contains(keys_to_avoid_entry)) {
+                try (PrintWriter writer = new PrintWriter(fileName, "UTF-8")) {
+                    for (final String key : multimap.keys()) { //For each key in the multimap
+                        if (consider_keys_to_avoid) { //I have to consider the keys_to_avoid
+                            boolean avoid_key = false; //Boolean that indicate if i have to skip this key or not
+                            if (avoid_only_full_string) {
+                                //The key must be equal
+                                if (keys_to_avoid.contains(key)) {
                                     avoid_key = true;
-                                    break; //stop the cycle
                                 }
-                            } //end key check cycle
-                        }
-                        if (!avoid_key) { //I can print that key
+                            } else {
+                                //The key could be equal or can contain the multimap key
+                                for (final String keys_to_avoid_entry : keys_to_avoid) {
+                                    if (key.equals(keys_to_avoid_entry) || key.contains(keys_to_avoid_entry)) {
+                                        avoid_key = true;
+                                        break; //stop the cycle
+                                    }
+                                } //end key check cycle
+                            }
+                            if (!avoid_key) { //I can print that key
+                                writer.println(key + " - " + new String(multimap.get(key).get(0), StandardCharsets.UTF_8)); //print string to file
+                            }
+                        } else { //consider_keys_to_avoid = false, just write normally
                             writer.println(key + " - " + new String(multimap.get(key).get(0), StandardCharsets.UTF_8)); //print string to file
                         }
-                    } else { //consider_keys_to_avoid = false, just write normally
-                        writer.println(key + " - " + new String(multimap.get(key).get(0), StandardCharsets.UTF_8)); //print string to file
                     }
                 }
-                writer.close();
                 Window.print_log("Creation of " + fileName + " successfully ended!");
             } else {
                 Window.print_log("Skipped creation of " + fileName + ", the list is empty...");
