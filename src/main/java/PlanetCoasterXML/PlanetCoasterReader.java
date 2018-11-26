@@ -37,7 +37,7 @@ public class PlanetCoasterReader {
     /**
      * LinkedListMultimap that contains the loaded file.
      */
-    public LinkedListMultimap<String, byte[]> loaded_file_multimap;
+    private LinkedListMultimap<String, byte[]> loaded_file_multimap;
 
     /**
      * Boolean that represent if is the new file, if so i need to store comments.
@@ -86,6 +86,26 @@ public class PlanetCoasterReader {
     } //Constructor
 
     /**
+     * Copy constructor for PlanetCoasterReader.
+     *
+     * @param copyReader The other PlanetCoasterReader to copy.
+     */
+    public PlanetCoasterReader(final PlanetCoasterReader copyReader){
+        isnewFile = copyReader.isnewFile;
+        loaded_file_multimap = LinkedListMultimap.create(copyReader.loaded_file_multimap);
+    }
+
+    /**
+     * Constructor that copy a user LinkedListMultimap into the reader.
+     *
+     * @param copyMultimap The user created LinkedListMultimap to insert into this reader.
+     */
+    public PlanetCoasterReader(final LinkedListMultimap<String, byte[]> copyMultimap){
+        isnewFile = false;
+        loaded_file_multimap = LinkedListMultimap.create(copyMultimap);
+    }
+
+    /**
      * This method scan all the nodes under the root.
      * <br>
      * While scanning all the nodes, this method fill the two arrays with all the values.
@@ -127,6 +147,15 @@ public class PlanetCoasterReader {
         }
         Window.print_log("Reader Arrays Created!");
         Window.print_log("---------------------------");
+    }
+
+    /**
+     * Method that return a copy of this file loaded LinkedListMultimap.
+     *
+     * @return A copy of the LinkedListMultimap loaded in this class.
+     */
+    public final LinkedListMultimap<String, byte[]> getLoadedFileMultimap(){
+        return LinkedListMultimap.create(loaded_file_multimap);
     }
 
     /**

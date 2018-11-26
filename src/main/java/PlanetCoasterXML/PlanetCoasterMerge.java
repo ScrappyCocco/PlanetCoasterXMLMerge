@@ -26,6 +26,13 @@ public class PlanetCoasterMerge {
      * A LinkedListMultimap that contains the string removed during the merge.
      */
     private LinkedListMultimap<String, byte[]> string_loss_multimap;
+
+
+    /**
+     * LinkedListMultimap that contains the merge of the first and the second file
+     * At the beginning of the merge is copied from second_file
+     */
+    private LinkedListMultimap<String, byte[]> finalMergeList;
     //----------------------------------------------------------
 
     /**
@@ -38,8 +45,8 @@ public class PlanetCoasterMerge {
      */
     public PlanetCoasterMerge(final PlanetCoasterReader first_input_file, final PlanetCoasterReader second_input_file) {
         //Saving values for later
-        first_file = first_input_file;
-        second_file = second_input_file;
+        first_file = new PlanetCoasterReader(first_input_file);
+        second_file = new PlanetCoasterReader(second_input_file);
         //----------------------------------------------------------
         //Print test - 1 - COMMENT THIS IF YOU DON'T WANT IT
         keys_check(0);
@@ -75,7 +82,7 @@ public class PlanetCoasterMerge {
      * @return The final file, resulted from merging the first and the second;
      */
     public final PlanetCoasterReader getFinalFile() {
-        return second_file;
+        return new PlanetCoasterReader(finalMergeList);
     }
 
     /**
@@ -100,18 +107,18 @@ public class PlanetCoasterMerge {
         switch (index) {
             case 0:
                 Window.print_log("PRE-MERGE: Char utf8_values:");
-                if (second_file.loaded_file_multimap.get("TrackElementDesc_TK_SP_Immelmann_180Left").size() == 0) {
+                if (second_file.getLoadedFileMultimap().get("TrackElementDesc_TK_SP_Immelmann_180Left").size() == 0) {
                     Window.print_log("PRE-MERGE: PLANET COASTER KEY NOT FOUND - Is the user using PlanetCoaster XML file?");
                 } else {
-                    Window.print_log(new String(second_file.loaded_file_multimap.get("TrackElementDesc_TK_SP_Immelmann_180Left").get(0), StandardCharsets.UTF_8));
+                    Window.print_log(new String(second_file.getLoadedFileMultimap().get("TrackElementDesc_TK_SP_Immelmann_180Left").get(0), StandardCharsets.UTF_8));
                 }
                 break;
             case 1:
                 Window.print_log("AFTER-MERGE: Char utf8_values:");
-                if (second_file.loaded_file_multimap.get("BuildingPartCategory_Building_Signs").size() == 0) {
+                if (second_file.getLoadedFileMultimap().get("BuildingPartCategory_Building_Signs").size() == 0) {
                     Window.print_log("AFTER-MERGE: PLANET COASTER KEY NOT FOUND - Is the user using PlanetCoaster XML file?");
                 } else {
-                    Window.print_log(new String(second_file.loaded_file_multimap.get("BuildingPartCategory_Building_Signs").get(0), StandardCharsets.UTF_8));
+                    Window.print_log(new String(second_file.getLoadedFileMultimap().get("BuildingPartCategory_Building_Signs").get(0), StandardCharsets.UTF_8));
                 }
                 break;
             default:
@@ -128,19 +135,22 @@ public class PlanetCoasterMerge {
      */
     private void merge_arrays() {
         Window.print_log("---------------------------");
-        int start_size = first_file.loaded_file_multimap.size();
+        //Copy the two multimap
+        LinkedListMultimap<String, byte[]> firstFileMultimap = first_file.getLoadedFileMultimap();
+        finalMergeList = second_file.getLoadedFileMultimap();
+        int start_size = firstFileMultimap.size();
         string_loss_multimap = LinkedListMultimap.create(); //Create the string loss multimap
         int values_found = 0; //Number of keys in the first file found in the second file
         int values_removed = 0; //Number of keys in the first file not found in the second file (keys loss counter)
-        for (final String key : first_file.loaded_file_multimap.keys()) { //For each key of the first file
+        for (final String key : firstFileMultimap.keys()) { //For each key of the first file
             //If the key from the first file is found in the second file, let's count it
-            if (second_file.loaded_file_multimap.get(key).size() > 0) {
+            if (finalMergeList.get(key).size() > 0) {
                 values_found++;
                 //Merge the old value in the new file
-                second_file.loaded_file_multimap.get(key).set(0, first_file.loaded_file_multimap.get(key).get(0));
+                finalMergeList.get(key).set(0, firstFileMultimap.get(key).get(0));
             } else { //not found in new file, counting a removed key and adding it
                 values_removed++;
-                string_loss_multimap.put(key, first_file.loaded_file_multimap.get(key).get(0));
+                string_loss_multimap.put(key, firstFileMultimap.get(key).get(0));
             }
         }
         Window.print_log("Start Size:" + start_size + " Found:" + values_found + " Removed:" + values_removed);

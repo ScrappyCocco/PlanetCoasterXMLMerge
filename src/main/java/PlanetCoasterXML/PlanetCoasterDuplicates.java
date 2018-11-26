@@ -93,12 +93,13 @@ public class PlanetCoasterDuplicates {
         duplicatesKeys = new ArrayList<String>();
         Set<String> duplicates = new HashSet<String>(); //Using an HashSet for convenience and speed
         String current_value;
-        Window.print_log("File keys:" + fileSelected.loaded_file_multimap.size());
+        LinkedListMultimap<String, byte[]> loadedFileMultimap = fileSelected.getLoadedFileMultimap();
+        Window.print_log("File keys:" + loadedFileMultimap.size());
         //for each key in the selected file
-        for (final String xml_key : fileSelected.loaded_file_multimap.keys()) {
+        for (final String xml_key : loadedFileMultimap.keys()) {
             current_value = xml_key;
             if (xml_key.contains("XMLPARSER-Comment")) { //The string is a comment. i have to get it
-                current_value = new String(fileSelected.loaded_file_multimap.get(xml_key).get(0), StandardCharsets.UTF_8);
+                current_value = new String(loadedFileMultimap.get(xml_key).get(0), StandardCharsets.UTF_8);
                 current_value = "<!--" + current_value + "-->"; //Use the xml-comment style to separate comments and keys
             }
             if (duplicates.contains(current_value)) { //If is already in the Set

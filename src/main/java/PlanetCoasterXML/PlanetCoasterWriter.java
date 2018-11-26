@@ -20,11 +20,14 @@ import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.ls.DOMImplementationLS;
 import org.w3c.dom.ls.LSSerializer;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -45,6 +48,11 @@ import javax.xml.transform.stream.StreamSource;
 public class PlanetCoasterWriter {
 
     /**
+     * Java Logger used to log few things about errors and information
+     */
+    private static final Logger LOGGER = Logger.getLogger( PlanetCoasterWriter.class.getName() );
+
+    /**
      * This function generate the xml Document from the reader.
      * <br>
      * It's used to prepare the xml output after the merge.
@@ -61,7 +69,7 @@ public class PlanetCoasterWriter {
             DocumentBuilder builder = dbf.newDocumentBuilder();
             xml_document = builder.newDocument();
         } catch (ParserConfigurationException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE ,"An error occurred parsing the input file", e);
             throw new PlanetCoasterWriterException("Error (ParserConfigurationException) --> " + e.getMessage());
         }
         //Start creating the root of the xml file
@@ -75,11 +83,12 @@ public class PlanetCoasterWriter {
         //create the xml with elements, comments, etc
         Element entry;
         Comment comment;
+        LinkedListMultimap<String, byte[]> inputFileMultimap = input_final_file.getLoadedFileMultimap();
         int comments_counter = 0;
-        for (final String xml_key : input_final_file.loaded_file_multimap.keys()) {
+        for (final String xml_key : inputFileMultimap.keys()) {
             if (xml_key.contains("XMLPARSER-Comment")) { //It's a comment, create a XML comment, and attach it
                 comments_counter++;
-                comment = xml_document.createComment(new String(input_final_file.loaded_file_multimap.get(xml_key).get(0), StandardCharsets.UTF_8));
+                comment = xml_document.createComment(new String(inputFileMultimap.get(xml_key).get(0), StandardCharsets.UTF_8));
                 translation.appendChild(comment);
             } else { //It's a entry, create a XML tag in planet coaster style, and attach it
                 entry = xml_document.createElement("entry"); //creating the node (tag)
@@ -87,7 +96,7 @@ public class PlanetCoasterWriter {
                 key.setValue(xml_key);
                 entry.setAttributeNode(key);
                 Attr translation_attr = xml_document.createAttribute("translation"); //creating the attr
-                translation_attr.setValue(new String(input_final_file.loaded_file_multimap.get(xml_key).get(0), StandardCharsets.UTF_8));
+                translation_attr.setValue(new String(inputFileMultimap.get(xml_key).get(0), StandardCharsets.UTF_8));
                 entry.setAttributeNode(translation_attr);
                 translation.appendChild(entry);
             }
@@ -111,6 +120,7 @@ public class PlanetCoasterWriter {
         StringWriter stringWriter = new StringWriter();
         StreamResult xmlOutput = new StreamResult(stringWriter);
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        transformerFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
         transformerFactory.setAttribute("indent-number", indent);
         Transformer transformer = transformerFactory.newTransformer();
         transformer.setOutputProperty(OutputKeys.INDENT, "yes");

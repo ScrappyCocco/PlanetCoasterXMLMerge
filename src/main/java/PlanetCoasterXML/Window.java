@@ -33,6 +33,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -45,6 +47,11 @@ import org.w3c.dom.Document;
  * This class has a listener for each button, plus some threads for the processing.
  */
 final class Window extends JFrame {
+
+    /**
+     * Java Logger used to log few things about errors and information
+     */
+    private static final Logger LOGGER = Logger.getLogger( Window.class.getName() );
 
     /**
      * Labels used in the window to tell the user the status of the program.
@@ -256,6 +263,7 @@ final class Window extends JFrame {
         result.setText("<html><i>An error occurred</i></html>");
         JLabel error_label = new JLabel(errorMessage);
         error_label.setFont(new Font(font, Font.BOLD, fontSize + 2));
+        LOGGER.log(Level.SEVERE, "displayError() called: " + errorMessage, errorMessage);
         JOptionPane.showMessageDialog(this,
                 error_label,
                 "An error occurred",
@@ -271,6 +279,7 @@ final class Window extends JFrame {
     private void displayInfo(final String infoMessage) {
         JLabel text_label = new JLabel("<html>" + infoMessage + "<br/>(Check console log for more)</html>");
         text_label.setFont(new Font(font, Font.PLAIN, fontSize));
+        LOGGER.log(Level.INFO, "displayInfo() called: " + infoMessage, infoMessage);
         JOptionPane.showMessageDialog(this,
                 text_label);
     }
@@ -285,6 +294,7 @@ final class Window extends JFrame {
         Date date = new Date();
         SimpleDateFormat ft = new SimpleDateFormat("hh:mm:ss");
         System.out.println(ft.format(date) + "-->" + s);
+        LOGGER.log(Level.FINE, "print_log() called: " + s, s);
     } //END OF print_log
 
 
@@ -536,13 +546,13 @@ final class Window extends JFrame {
                                 JOptionPane.YES_NO_OPTION);
                         if (result == JOptionPane.YES_OPTION) { //Removing the duplicates
                             print_log("User accepted to remove the duplicates");
-                            print_log("Start size:" + second_file.loaded_file_multimap.size());
+                            print_log("Start size:" + second_file.getLoadedFileMultimap().size());
                             //Overwrite the loaded file
-                            int before_size = second_file.loaded_file_multimap.size();
-                            second_file.loaded_file_multimap = PlanetCoasterDuplicates.clear_from_duplicates(second_file.loaded_file_multimap);
-                            print_log("Final size:" + second_file.loaded_file_multimap.size());
+                            int before_size = second_file.getLoadedFileMultimap().size();
+                            second_file = new PlanetCoasterReader(PlanetCoasterDuplicates.clear_from_duplicates(second_file.getLoadedFileMultimap()));
+                            print_log("Final size:" + second_file.getLoadedFileMultimap().size());
                             print_log("Overwriting second file loaded map...");
-                            displayInfo((before_size - second_file.loaded_file_multimap.size()) + " duplicates removed! Your file is ready and clean.");
+                            displayInfo((before_size - second_file.getLoadedFileMultimap().size()) + " duplicates removed! Your file is ready and clean.");
                         } else { //Leaving the duplicates
                             print_log("User refused to remove the duplicates, sending alert");
                             text_label.setText("<html>Remember you are doing a merge with a file with duplicates<br/>This will generate an end file with duplicates...</html>");
@@ -611,7 +621,7 @@ final class Window extends JFrame {
                 //Prepare the xml document
                 Document xml_document = PlanetCoasterWriter.generate_xml_output(merger.getFinalFile());
                 //Write the xml document
-                PlanetCoasterWriter.write_xml_file(xml_document, "FinalNEW.xml");
+                PlanetCoasterWriter.write_xml_file(xml_document, "Final.xml");
                 //Create string loss
                 PlanetCoasterWriter.write_multimap_to_file(merger.getRemovedKeys(), "StringLoss.txt");
                 //process ended
@@ -758,7 +768,7 @@ final class Window extends JFrame {
                         break;
                     case 3://Keys and Entries
                         print_log("User choice: Keys and Entries");
-                        PlanetCoasterWriter.write_multimap_to_file(file_choice.loaded_file_multimap, "KeysAndEntries.txt");
+                        PlanetCoasterWriter.write_multimap_to_file(file_choice.getLoadedFileMultimap(), "KeysAndEntries.txt");
                         file_created = true;
                         break;
                     default:

@@ -6,7 +6,7 @@
 
 	<groupId>github.ScrappyCocco</groupId>
 	<artifactId>PlanetCoasterXMLMerge</artifactId>
-	<version>1.18</version>
+	<version>1.19</version>
 	<packaging>jar</packaging>
 	<name>PlanetCoasterXMLMerge</name>
 	<url>https://github.com/ScrappyCocco/PlanetCoasterXMLMerge</url>
