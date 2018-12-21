@@ -53,6 +53,9 @@ public class PlanetCoasterReader {
      * @throws PlanetCoasterReaderException throw an invalid UTF-8 charset exception (from scan_node()) or a generic Exception if the XML file is not valid;
      */
     public PlanetCoasterReader(final String file_to_open, final boolean isfinalfile) throws PlanetCoasterReaderException {
+        if(file_to_open == null){
+            throw new IllegalArgumentException("No file to open given...");
+        }
         Element root; //The root element of the xml file
         Document document_file;
         isnewFile = isfinalfile; //if is the new file i need to store comments
@@ -91,6 +94,9 @@ public class PlanetCoasterReader {
      * @param copyReader The other PlanetCoasterReader to copy.
      */
     public PlanetCoasterReader(final PlanetCoasterReader copyReader){
+        if(copyReader == null){
+            throw new IllegalArgumentException("No reader to copy given...");
+        }
         isnewFile = copyReader.isnewFile;
         loaded_file_multimap = LinkedListMultimap.create(copyReader.loaded_file_multimap);
     }
@@ -101,6 +107,9 @@ public class PlanetCoasterReader {
      * @param copyMultimap The user created LinkedListMultimap to insert into this reader.
      */
     public PlanetCoasterReader(final LinkedListMultimap<String, byte[]> copyMultimap){
+        if(copyMultimap == null || copyMultimap.size() == 0){
+            throw new IllegalArgumentException("No Multimap to copy given...");
+        }
         isnewFile = false;
         loaded_file_multimap = LinkedListMultimap.create(copyMultimap);
     }

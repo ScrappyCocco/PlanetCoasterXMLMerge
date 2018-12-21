@@ -1,7 +1,7 @@
 ![planet coaster icon](./src/main/resources/planet_icon.png)  [![Build Status](https://travis-ci.org/ScrappyCocco/PlanetCoasterXMLMerge.svg?branch=master)](https://travis-ci.org/ScrappyCocco/PlanetCoasterXMLMerge) [![codecov](https://codecov.io/gh/ScrappyCocco/PlanetCoasterXMLMerge/branch/master/graph/badge.svg)](https://codecov.io/gh/ScrappyCocco/PlanetCoasterXMLMerge) [![Number of Bugs](https://sonarcloud.io/api/project_badges/measure?project=ScrappyCocco_PlanetCoasterXMLMerge&metric=bugs)](https://sonarcloud.io/dashboard?id=ScrappyCocco_PlanetCoasterXMLMerge)
 
 # Planet Coaster XML Merge
-A little software for Planet Coaster translators that merge the old xml translation file with the new xml. (Leaving the translated sentences).
+This is a small software for Planet Coaster translators that merge the old xml translation file with the new xml. (Leaving the translated sentences).
 You can use it too for checking duplicates or to print some values to a text file.
 
 The program can easily be modified if you need to merge a completely different type of XML file.
@@ -16,13 +16,16 @@ To execute this program you need Java, you can download Java [from here](https:/
 
 If you want to re-compile the program, you need the JDK, you can download it [from here](http://www.oracle.com/technetwork/java/javase/downloads/index.html) and also Maven, you can get it [from here](https://maven.apache.org).
 
+### Documentation
+
 **All the code documentation of the program is available as Javadoc**, you can read it [here](https://scrappycocco.github.io/PlanetCoasterXMLMerge/).
 
-To run the program you can re-compile it and package it with those 2 commands in your terminal:
+### Build and run the program
+
+To run the program you can re-compile it and install it with this command:
 
 ```
-mvn compile
-mvn package
+mvn package install
 ```
 
 (The project build has been moved to Maven, if you want to build it with JDK you'll need the jars files listed in "Build using" and to use the classpath. Considering how easy is to build with Maven, i suggest you to use it if you want to recompile the program.)
