@@ -17,4 +17,4 @@ script:
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
-  - mvn sonar:sonar
+  - mvn sonar:sonar -Dsonar.projectKey=ScrappyCocco_PlanetCoasterXMLMerge -Dsonar.organization=scrappycocco-github -Dsonar.host.url=https://sonarcloud.io
