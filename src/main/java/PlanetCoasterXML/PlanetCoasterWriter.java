@@ -64,8 +64,9 @@ public class PlanetCoasterWriter {
     public static Document generate_xml_output(final PlanetCoasterReader input_final_file) throws PlanetCoasterWriterException {
         Document xml_document;
         //initialize the xml Document and the DocumentBuilder
-        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         try {
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            dbf.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
             DocumentBuilder builder = dbf.newDocumentBuilder();
             xml_document = builder.newDocument();
         } catch (ParserConfigurationException e) {
