@@ -107,7 +107,7 @@ public class PlanetCoasterMerge {
         switch (index) {
             case 0:
                 Window.print_log("PRE-MERGE: Char utf8_values:");
-                if (second_file.getLoadedFileMultimap().get("TrackElementDesc_TK_SP_Immelmann_180Left").size() == 0) {
+                if (second_file.getLoadedFileMultimap().get("TrackElementDesc_TK_SP_Immelmann_180Left").isEmpty()) {
                     Window.print_log("PRE-MERGE: PLANET COASTER KEY NOT FOUND - Is the user using PlanetCoaster XML file?");
                 } else {
                     Window.print_log(new String(second_file.getLoadedFileMultimap().get("TrackElementDesc_TK_SP_Immelmann_180Left").get(0), StandardCharsets.UTF_8));
@@ -115,7 +115,7 @@ public class PlanetCoasterMerge {
                 break;
             case 1:
                 Window.print_log("AFTER-MERGE: Char utf8_values:");
-                if (second_file.getLoadedFileMultimap().get("BuildingPartCategory_Building_Signs").size() == 0) {
+                if (second_file.getLoadedFileMultimap().get("BuildingPartCategory_Building_Signs").isEmpty()) {
                     Window.print_log("AFTER-MERGE: PLANET COASTER KEY NOT FOUND - Is the user using PlanetCoaster XML file?");
                 } else {
                     Window.print_log(new String(second_file.getLoadedFileMultimap().get("BuildingPartCategory_Building_Signs").get(0), StandardCharsets.UTF_8));
@@ -144,7 +144,7 @@ public class PlanetCoasterMerge {
         int values_removed = 0; //Number of keys in the first file not found in the second file (keys loss counter)
         for (final String key : firstFileMultimap.keys()) { //For each key of the first file
             //If the key from the first file is found in the second file, let's count it
-            if (finalMergeList.get(key).size() > 0) {
+            if (!finalMergeList.get(key).isEmpty()) {
                 values_found++;
                 //Merge the old value in the new file
                 finalMergeList.get(key).set(0, firstFileMultimap.get(key).get(0));

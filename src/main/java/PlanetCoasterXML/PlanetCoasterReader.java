@@ -18,6 +18,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 import com.google.common.collect.LinkedListMultimap;
@@ -136,7 +137,7 @@ public class PlanetCoasterReader {
                 if (node.getNodeName().equals("entry")) { //if is an entry
                     NamedNodeMap node_att = node.getAttributes(); //Checking tag attrs
                     if (node_att.getLength() > 0) { //The entry has attrs, save them
-                        loaded_file_multimap.put(((Attr) node_att.item(0)).getValue(), ((Attr) node_att.item(1)).getValue().getBytes(Charset.forName("UTF-8")));
+                        loaded_file_multimap.put(((Attr) node_att.item(0)).getValue(), ((Attr) node_att.item(1)).getValue().getBytes(StandardCharsets.UTF_8));
                     }
                 } else { //if is a comment
                     if (isnewFile) { //store comments only if is the new file
@@ -144,7 +145,7 @@ public class PlanetCoasterReader {
                             Comment comment = (Comment) node;
                             //i use as key "XMLPARSER-Comment" and an index to make every comment different
                             //it's better to not store comments with the same key
-                            loaded_file_multimap.put("XMLPARSER-Comment " + comment_index, comment.getData().getBytes(Charset.forName("UTF-8")));
+                            loaded_file_multimap.put("XMLPARSER-Comment " + comment_index, comment.getData().getBytes(StandardCharsets.UTF_8));
                             comment_index++;
                         }
                     } //is_new_file

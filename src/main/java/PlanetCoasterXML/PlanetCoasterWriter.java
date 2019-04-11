@@ -166,7 +166,7 @@ public class PlanetCoasterWriter {
      */
     public static void write_string_array_to_file(final ArrayList<String> input_array, final String fileName) throws PlanetCoasterWriterException {
         try {
-            if (input_array.size() > 0) {
+            if (!input_array.isEmpty()) {
                 Window.print_log("Creation of " + fileName + " started...");
                 PrintWriter writer = new PrintWriter(fileName, "UTF-8");
                 for (final String output_string : input_array) {
@@ -194,7 +194,7 @@ public class PlanetCoasterWriter {
      */
     public static void write_byte_array_to_file(final ArrayList<byte[]> input_array, final String fileName) throws PlanetCoasterWriterException {
         try {
-            if (input_array.size() > 0) {
+            if (!input_array.isEmpty()) {
                 Window.print_log("Creation of " + fileName + " started...");
                 try (PrintWriter writer = new PrintWriter(fileName, "UTF-8")) {
                     for (final byte[] output_string : input_array) {
@@ -239,7 +239,7 @@ public class PlanetCoasterWriter {
         try {
             if (multimap.size() > 0) { //if there is something to write
                 boolean consider_keys_to_avoid; //Boolean that indicate if i should consider the keys_to_avoid
-                consider_keys_to_avoid = keys_to_avoid != null && keys_to_avoid.size() > 0; //Initialize the boolean
+                consider_keys_to_avoid = keys_to_avoid != null && !keys_to_avoid.isEmpty(); //Initialize the boolean
                 Window.print_log("Creation of " + fileName + " started...");
                 try (PrintWriter writer = new PrintWriter(fileName, "UTF-8")) {
                     for (final String key : multimap.keys()) { //For each key in the multimap

@@ -1,10 +1,20 @@
 language: java
+
 jdk:
- - oraclejdk8
+  - oraclejdk8
+
+addons:
+  sonarcloud:
+    organization: "scrappycocco-github"
+
+cache:
+  directories:
+    - '$HOME/.sonar/cache'
 
 script:
- - mvn package install
- - mvn cobertura:cobertura
+  - mvn package install
+  - mvn cobertura:cobertura
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
+  - mvn sonar:sonar
